@@ -51,28 +51,40 @@
 
     <script>
       const mines = [
-        (1, 7),
-        (3, 2),
-        (4, 7),
-        (6, 0),
-        (6, 1),
-        (6, 2),
-        (6, 3),
-        (7, 4),
-        (7, 5),
-        (8, 3),
-        (8, 5),
+        [1, 7],
+        [3, 2],
+        [4, 7],
+        [6, 0],
+        [6, 1],
+        [6, 2],
+        [6, 3],
+        [7, 4],
+        [7, 5],
+        [8, 3],
+        [8, 5],
       ];
 
       const container = document.querySelector(".container");
+      let isGameOver = false;
 
       fillGrid();
 
       function fillGrid() {
         for (let i = 0; i < 81; i++) {
-          const row = i % 9;
-          const column = Math.floor(i / 9);
-          container.innerHTML += `<button class="cell cell-empty" id="cell-${row}-${column}" onclick="cellSelected(${row},${column})"></button>`;
+          const row = Math.floor(i / 9);
+          const column = i % 9;
+
+          const el = document.createElement("button");
+          el.classList.add("cell", "cell-empty");
+          el.id = `cell-${row}-${column}`;
+          el.oncontextmenu = () => {
+            event.preventDefault(); // Prevents the default context menu
+            addFlag(row, column);
+          };
+          el.onclick = (event) => {
+            cellSelected(row, column);
+          };
+          container.appendChild(el);
         }
       }
 
@@ -81,18 +93,43 @@
 
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
-        // cell.innerText = "💀";
+        cell.innerHTML = "";
 
         cell.classList.remove("cell-empty");
 
+        let number = 0;
         for (let i = 0; i < mines.length; i++) {
-          const { r, c } = mines[i];
-          console.log("r: ", row, " c: ", column);
+          const [r, c] = mines[i];
+          console.log("r: ", r, " c: ", c);
 
           if (r == row && c == column) {
+            console.log("oppps");
             cell.innerText = "💀";
+            gameOver();
           }
+
+         if(Math.abs(r - row) <= 1 && Math.abs(c - column) <= 1) {
+          number += 1;
+         }
         }
+
+        if(!isGameOver) {
+          cell.innerHTML = number == 0 ? "" : number;
+        }
+      }
+
+      function gameOver() {
+        isGameOver = true;
+        
+      }
+
+      function addFlag(row, column) {
+        console.log("row: ", row, " column: ", column);
+
+        const id = `cell-${row}-${column}`;
+        const cell = document.getElementById(id);
+
+        cell.innerHTML = "🚩";
       }
     </script>
   </body>

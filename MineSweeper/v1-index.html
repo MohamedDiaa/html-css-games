@@ -50,12 +50,6 @@
     </div>
 
     <script>
-
-        const DEATH = `☠️`;
-      let map = new Array(9).fill(null).map(() => new Array(9).fill(""));
-      const container = document.querySelector(".container");
-      let isGameOver = false;
-
       const mines = [
         [1, 7],
         [3, 2],
@@ -70,90 +64,63 @@
         [8, 5],
       ];
 
-      fillMap();
+      const container = document.querySelector(".container");
+      let isGameOver = false;
+
       fillGrid();
 
-      // Definitions
-
-      function fillMines() {}
-
-      function fillMap() {
-        for (let i = 0; i < 9; i++) {
-          for (let j = 0; j < 9; j++) {
-      
-            let isEmpty = true;
-
-            for (let k = 0; k < mines.length; k++) {
-              let [a, b] = mines[k];
-              if (a == i && b == j) {
-                map[i][j] = DEATH;
-                isEmpty = false;
-              }
-            }
-
-            if (isEmpty) {
-              let count = 0;
-
-              for (let k = 0; k < mines.length; k++) {
-                let [a, b] = mines[k];
-                if (Math.abs(a - i) <= 1 && Math.abs(b - j) <= 1) {
-                  count += 1;
-                }
-              }
-              if (count > 0) {
-                isEmpty = false;
-                map[i][j] = `${count}`;
-              }
-            }
-
-            if (isEmpty) {
-              map[i][j] = "";
-            }
-          }
-        }
-      }
-
       function fillGrid() {
-        for (let i = 0; i < 9; i++) {
-          for (let j = 0; j < 9; j++) {
-            appendCell(i, j);
-          }
-        }
-      }
+        for (let i = 0; i < 81; i++) {
+          const row = Math.floor(i / 9);
+          const column = i % 9;
 
-      function appendCell(row, column) {
-        const el = document.createElement("button");
-        el.classList.add("cell", "cell-empty");
-        el.id = `cell-${row}-${column}`;
-        el.oncontextmenu = () => {
-          event.preventDefault(); // Prevents the default context menu
-          addFlag(row, column);
-        };
-        el.onclick = (event) => {
-          cellSelected(row, column);
-        };
-        container.appendChild(el);
+          const el = document.createElement("button");
+          el.classList.add("cell", "cell-empty");
+          el.id = `cell-${row}-${column}`;
+          el.oncontextmenu = () => {
+            event.preventDefault(); // Prevents the default context menu
+            addFlag(row, column);
+          };
+          el.onclick = (event) => {
+            cellSelected(row, column);
+          };
+          container.appendChild(el);
+        }
       }
 
       function cellSelected(row, column) {
-//        console.log("row: ", row, " column: ", column);
+        console.log("row: ", row, " column: ", column);
 
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
+        cell.innerHTML = "";
 
         cell.classList.remove("cell-empty");
 
-        const value =  map[row][column];
-        cell.innerHTML = value;
+        let number = 0;
+        for (let i = 0; i < mines.length; i++) {
+          const [r, c] = mines[i];
+          console.log("r: ", r, " c: ", c);
 
-        if (value === DEATH) {
+          if (r == row && c == column) {
+            console.log("oppps");
+            cell.innerText = "💀";
             gameOver();
+          }
+
+         if(Math.abs(r - row) <= 1 && Math.abs(c - column) <= 1) {
+          number += 1;
+         }
+        }
+
+        if(!isGameOver) {
+          cell.innerHTML = number == 0 ? "" : number;
         }
       }
 
       function gameOver() {
         isGameOver = true;
-        alert("game over");
+        
       }
 
       function addFlag(row, column) {

@@ -27,7 +27,6 @@
       }
       .container {
         display: grid;
-        grid-template-columns: repeat(9, 50px);
 
         border-right: 10px solid white;
         border-bottom: 10px solid white;
@@ -62,8 +61,10 @@
   <body>
     <div class="container-parent">
       <div class="info-bar">
-        <div class="score-number">009</div>
-        <button id="happy-button" class="cell" onclick="startNewGame()">🙂</button>
+        <div id="mines-count" class="score-number">000</div>
+        <button id="happy-button" class="cell" onclick="startNewGame()">
+          🙂
+        </button>
         <div class="score-number">000</div>
       </div>
       <div class="container"></div>
@@ -71,7 +72,10 @@
 
     <script>
       const DEATH = `☠️`;
-      let map = new Array(9).fill(null).map(() => new Array(9).fill(""));
+      const MINES_COUNT = 11;
+      const SIZE = 9;
+
+      let map = new Array(SIZE).fill(null).map(() => new Array(SIZE).fill(""));
       const container = document.querySelector(".container");
       let isGameOver = false;
 
@@ -95,15 +99,18 @@
 
       function startNewGame() {
         isGameOver = false;
+        setupScoreBar();
         fillMap();
         fillGrid();
       }
 
-      function fillMines() {}
+      function fillMines() {
+        //for
+      }
 
       function fillMap() {
-        for (let i = 0; i < 9; i++) {
-          for (let j = 0; j < 9; j++) {
+        for (let i = 0; i < SIZE; i++) {
+          for (let j = 0; j < SIZE; j++) {
             let isEmpty = true;
 
             for (let k = 0; k < mines.length; k++) {
@@ -136,16 +143,22 @@
         }
       }
 
-      function fillGrid() {
-        const btn = document.getElementById("happy-button");
+      function setupScoreBar() {
+        const btn = document.querySelector("#happy-button");
         btn.innerHTML = isGameOver ? "😵" : "🙂";
+        const minesCount = document.querySelector("#mines-count");
+        minesCount.innerHTML = `${mines.length}`;
+      }
 
+      function fillGrid() {
         while (container.lastElementChild) {
           container.removeChild(container.lastElementChild);
         }
+        //
+        container.style.gridTemplateColumns = `repeat(${SIZE}, 50px)`;
 
-        for (let i = 0; i < 9; i++) {
-          for (let j = 0; j < 9; j++) {
+        for (let i = 0; i < SIZE; i++) {
+          for (let j = 0; j < SIZE; j++) {
             appendCell(i, j);
           }
         }

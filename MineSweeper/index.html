@@ -78,6 +78,7 @@
       let map = new Array(SIZE).fill(null).map(() => new Array(SIZE).fill(""));
       const container = document.querySelector(".container");
       let isGameOver = false;
+      let isGameWon = false;
 
       const mines = new Array();
 
@@ -88,8 +89,12 @@
       function startNewGame() {
         isGameOver = false;
         setupScoreBar();
+
         mines.length = 0;
         mines.push(...generateMines());
+
+        map.length = 0;
+        map = new Array(SIZE).fill(null).map(() => new Array(SIZE).fill(""));
 
         fillMap();
         fillGrid();
@@ -144,7 +149,12 @@
 
       function setupScoreBar() {
         const btn = document.querySelector("#happy-button");
-        btn.innerHTML = isGameOver ? "😵" : "🙂";
+
+        if (isGameOver) {
+          btn.innerHTML = isGameWon ? "😎" : "😵";
+        } else {
+          btn.innerHTML = "🙂";
+        }
         const minesCount = document.querySelector("#mines-count");
         minesCount.innerHTML = `${mines.length}`;
       }
@@ -207,6 +217,7 @@
 
       function gameOver() {
         isGameOver = true;
+        isGameWon = false;
         fillGrid();
         alert("game over");
       }
@@ -216,8 +227,10 @@
 
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
-
-        cell.innerHTML = cell.innerHTML === "🚩" ? "" : "🚩";
+        
+        if(cell.classList.contains("cell-empty")) {
+          cell.innerHTML = cell.innerHTML === "🚩" ? "" : "🚩";
+        }
       }
 
       function revealEmptyCells(row, column) {
@@ -272,6 +285,7 @@
 
         if (cellsRevealed === safeCells) {
           isGameOver = true;
+          isGameWon = true;
           setupScoreBar();
           alert("🎉 You won!");
           fillGrid(); // Show remaining mines

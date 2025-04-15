@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mine Sweeper</title>
+    <link
+      href="https://fonts.cdnfonts.com/css/digital-numbers"
+      rel="stylesheet"
+    />
     <style>
       * {
         padding: 0;
@@ -42,10 +46,26 @@
         border-top: 6px solid white;
         border-left: 6px solid white;
       }
+      .info-bar {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      .score-number {
+        background-color: rgb(162, 161, 161);
+        font-size: 40px;
+        color: red;
+        font-family: "Digital Numbers", sans-serif;
+      }
     </style>
   </head>
   <body>
     <div class="container-parent">
+      <div class="info-bar">
+        <div class="score-number">009</div>
+        <button id="happy-button" class="cell" onclick="startNewGame()">🙂</button>
+        <div class="score-number">000</div>
+      </div>
       <div class="container"></div>
     </div>
 
@@ -69,10 +89,15 @@
         [8, 5],
       ];
 
-      fillMap();
-      fillGrid();
+      startNewGame();
 
       // Definitions
+
+      function startNewGame() {
+        isGameOver = false;
+        fillMap();
+        fillGrid();
+      }
 
       function fillMines() {}
 
@@ -112,6 +137,9 @@
       }
 
       function fillGrid() {
+        const btn = document.getElementById("happy-button");
+        btn.innerHTML = isGameOver ? "😵" : "🙂";
+
         while (container.lastElementChild) {
           container.removeChild(container.lastElementChild);
         }

@@ -90,7 +90,7 @@
         setupScoreBar();
         mines.length = 0;
         mines.push(...generateMines());
-        
+
         fillMap();
         fillGrid();
       }
@@ -106,6 +106,7 @@
         }
         return newMines;
       }
+
       function fillMap() {
         for (let i = 0; i < SIZE; i++) {
           for (let j = 0; j < SIZE; j++) {
@@ -189,17 +190,19 @@
 
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
-
         if (cell.innerHTML === "🚩") return;
 
-        cell.classList.remove("cell-empty");
-
         const value = map[row][column];
-        cell.innerHTML = value;
 
         if (value === DEATH) {
+          cell.innerHTML = value;
+          cell.classList.remove("cell-empty");
           gameOver();
+          return;
         }
+
+        revealEmptyCells(row, column);
+        checkWinCondition(); // ⬅️ call this after every valid click
       }
 
       function gameOver() {
@@ -215,7 +218,65 @@
         const cell = document.getElementById(id);
 
         cell.innerHTML = cell.innerHTML === "🚩" ? "" : "🚩";
-    }
+      }
+
+      function revealEmptyCells(row, column) {
+        const visited = new Set();
+
+        function dfs(r, c) {
+          const key = `${r}-${c}`;
+          if (visited.has(key)) return;
+          visited.add(key);
+
+          // Out of bounds
+          if (r < 0 || r >= SIZE || c < 0 || c >= SIZE) return;
+
+          const id = `cell-${r}-${c}`;
+          const cell = document.getElementById(id);
+
+          if (!cell || !cell.classList.contains("cell-empty")) return;
+
+          cell.classList.remove("cell-empty");
+          const value = map[r][c];
+          cell.innerHTML = value;
+
+          // Only expand if the cell is empty (no number)
+          if (value === "") {
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr !== 0 || dc !== 0) {
+                  dfs(r + dr, c + dc);
+                }
+              }
+            }
+          }
+        }
+
+        dfs(row, column);
+      }
+
+      function checkWinCondition() {
+        let cellsRevealed = 0;
+        for (let i = 0; i < SIZE; i++) {
+          for (let j = 0; j < SIZE; j++) {
+            const id = `cell-${i}-${j}`;
+            const cell = document.getElementById(id);
+            if (!cell.classList.contains("cell-empty")) {
+              cellsRevealed++;
+            }
+          }
+        }
+
+        const totalCells = SIZE * SIZE;
+        const safeCells = totalCells - mines.length;
+
+        if (cellsRevealed === safeCells) {
+          isGameOver = true;
+          setupScoreBar();
+          alert("🎉 You won!");
+          fillGrid(); // Show remaining mines
+        }
+      }
     </script>
   </body>
 </html>

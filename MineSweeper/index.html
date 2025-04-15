@@ -50,8 +50,7 @@
     </div>
 
     <script>
-
-        const DEATH = `☠️`;
+      const DEATH = `☠️`;
       let map = new Array(9).fill(null).map(() => new Array(9).fill(""));
       const container = document.querySelector(".container");
       let isGameOver = false;
@@ -80,7 +79,6 @@
       function fillMap() {
         for (let i = 0; i < 9; i++) {
           for (let j = 0; j < 9; j++) {
-      
             let isEmpty = true;
 
             for (let k = 0; k < mines.length; k++) {
@@ -114,6 +112,10 @@
       }
 
       function fillGrid() {
+        while (container.lastElementChild) {
+          container.removeChild(container.lastElementChild);
+        }
+
         for (let i = 0; i < 9; i++) {
           for (let j = 0; j < 9; j++) {
             appendCell(i, j);
@@ -123,36 +125,45 @@
 
       function appendCell(row, column) {
         const el = document.createElement("button");
-        el.classList.add("cell", "cell-empty");
-        el.id = `cell-${row}-${column}`;
-        el.oncontextmenu = () => {
-          event.preventDefault(); // Prevents the default context menu
-          addFlag(row, column);
-        };
-        el.onclick = (event) => {
-          cellSelected(row, column);
-        };
+        el.classList.add("cell");
+
+        if (isGameOver) {
+          el.innerHTML = map[row][column];
+        } else {
+          el.classList.add("cell-empty");
+
+          el.id = `cell-${row}-${column}`;
+          el.oncontextmenu = () => {
+            event.preventDefault(); // Prevents the default context menu
+            addFlag(row, column);
+          };
+          el.onclick = (event) => {
+            cellSelected(row, column);
+          };
+        }
+
         container.appendChild(el);
       }
 
       function cellSelected(row, column) {
-//        console.log("row: ", row, " column: ", column);
+        //console.log("row: ", row, " column: ", column);
 
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
 
         cell.classList.remove("cell-empty");
 
-        const value =  map[row][column];
+        const value = map[row][column];
         cell.innerHTML = value;
 
         if (value === DEATH) {
-            gameOver();
+          gameOver();
         }
       }
 
       function gameOver() {
         isGameOver = true;
+        fillGrid();
         alert("game over");
       }
 

@@ -79,19 +79,7 @@
       const container = document.querySelector(".container");
       let isGameOver = false;
 
-      const mines = [
-        [1, 7],
-        [3, 2],
-        [4, 7],
-        [6, 0],
-        [6, 1],
-        [6, 2],
-        [6, 3],
-        [7, 4],
-        [7, 5],
-        [8, 3],
-        [8, 5],
-      ];
+      const mines = new Array();
 
       startNewGame();
 
@@ -100,14 +88,24 @@
       function startNewGame() {
         isGameOver = false;
         setupScoreBar();
+        mines.length = 0;
+        mines.push(...generateMines());
+        
         fillMap();
         fillGrid();
       }
 
-      function fillMines() {
-        //for
+      function generateMines() {
+        let newMines = [];
+        while (newMines.length < MINES_COUNT) {
+          const row = Math.floor(Math.random() * SIZE);
+          const col = Math.floor(Math.random() * SIZE);
+          if (!newMines.some(([a, b]) => a === row && b === col)) {
+            newMines.push([row, col]);
+          }
+        }
+        return newMines;
       }
-
       function fillMap() {
         for (let i = 0; i < SIZE; i++) {
           for (let j = 0; j < SIZE; j++) {
@@ -187,10 +185,12 @@
       }
 
       function cellSelected(row, column) {
-        //console.log("row: ", row, " column: ", column);
+        if (isGameOver) return;
 
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
+
+        if (cell.innerHTML === "🚩") return;
 
         cell.classList.remove("cell-empty");
 
@@ -214,8 +214,8 @@
         const id = `cell-${row}-${column}`;
         const cell = document.getElementById(id);
 
-        cell.innerHTML = "🚩";
-      }
+        cell.innerHTML = cell.innerHTML === "🚩" ? "" : "🚩";
+    }
     </script>
   </body>
 </html>

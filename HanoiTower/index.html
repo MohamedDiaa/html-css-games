@@ -37,7 +37,7 @@
       .disk {
         position: absolute;
         background-color: black;
-        height: 20px;
+        height: 30px;
         border: 1px dotted white;
         /* width: 300px; */
         /* bottom: 0px; */
@@ -57,10 +57,10 @@
       // Constants
       const DISK_COUNT = 6;
       const MAX_WIDTH = 300;
-      const DISK_HEIGHT = 20;
+      const DISK_HEIGHT = 30;
 
       // Model
-      let disks = new Array(3).fill(null).map((d) => {
+      let towers = new Array(3).fill(null).map(() => {
         new Array(5);
       });
 
@@ -73,38 +73,55 @@
       }
 
       function setup() {
-        disks.length = 0;
-        disks = new Array(3).fill(null).map(() => { return new Array(DISK_COUNT); });
-
-
+        towers.length = 0;
+        towers = new Array(3).fill(null).map(() => {
+          return new Array(DISK_COUNT);
+        });
 
         for (let i = 0; i < DISK_COUNT; i++) {
           const d = new Disk(MAX_WIDTH - 40 * i);
-          disks[0][i] = d;
+          towers[0][i] = d;
         }
       }
 
       function display() {
-        let towers = document.getElementsByClassName("tower");
-        if (towers.length != disks.length) {
+        let towersView = document.getElementsByClassName("tower");
+        if (towersView.length != towers.length) {
           return;
         }
 
-        for (let i = 0; i < towers.length; i++) {
-          for (let j = 0; j < disks[i].length; j++) {
-            let div = document.createElement("div");
-            let w = disks[i][j].width;
+        for (let i = 0; i < towersView.length; i++) {
+          for (let j = 0; j < towers[i].length; j++) {
+            let disk = towers[i][j];
+            if (disk) {
+              let div = document.createElement("div");
+              let w = towers[i][j].width;
 
-            div.className = "disk";
+              div.className = "disk";
+              div.id = `disk-${w}`;
+              div.style.width = `${w}px`;
+              div.style.height = `${DISK_HEIGHT}px`;
+              div.onclick = (event) => {
+                selectDisk(i, j, w);
+              };
 
-            div.style.width = `${w}px`;
-            div.style.height = `${DISK_HEIGHT}px`;
-
-            div.style.bottom = `${DISK_HEIGHT * j}px`;
-            div.style.transform = `translate(${-w / 2 + 10}px, 0)`;
-            towers[i].appendChild(div);
+              div.style.bottom = `${DISK_HEIGHT * j}px`;
+              div.style.transform = `translate(${-w / 2 + 10}px, 0)`;
+              towersView[i].appendChild(div);
+            }
           }
         }
+      }
+
+      function selectDisk(towerNumber, index, width) {
+        console.log("I am here xxxxxxx");
+        if (towers[towerNumber].length - 1 != index) {
+          return;
+        }
+
+        let id = `disk-${width}`;
+        let element = document.getElementById(id);
+        element.style.backgroundColor = "red";
       }
     </script>
   </body>

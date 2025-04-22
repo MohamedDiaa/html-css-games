@@ -43,10 +43,46 @@
         /* bottom: 0px; */
         /* transform: translate(-140px, 0); */
       }
+      label {
+        font-size: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      button {
+        margin-left: 20px;
+        font-size: 24px;
+      }
+      option {
+        font-size: 30px;
+      }
+      .select-form {
+        display: flex;
+        justify-content: center;
+      }
+    
     </style>
   </head>
   <body>
     <h1>Hanoi Tower</h1>
+
+    <div class="select-form">
+      <form action="">
+        <label for="">From</label>
+        <select name="from" id="">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+
+        <label for="">to</label>
+        <select name="from" id="">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+        <Button>Go</Button>
+      </form>
+    </div>
     <div class="hanoi-tower-container">
       <div class="tower"></div>
       <div class="tower"></div>
@@ -63,6 +99,8 @@
       let towers = new Array(3).fill(null).map(() => {
         new Array(5);
       });
+
+      let dragItem = null;
 
       // Functions
       setup();
@@ -120,9 +158,36 @@
         }
 
         let id = `disk-${width}`;
-        let element = document.getElementById(id);
+        let element = document.getElementById(id).cloneNode();
+        document.append(element);
+        element.style.left = `100px`;
+        element.style.top = `100px`;
         element.style.backgroundColor = "red";
+        dragItem = element;
       }
+
+      /*
+      // Dragging selected element
+      let offsetX = 0, offsetY = 0, isDragging = false;
+
+      dragItem.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - dragItem.offsetLeft;
+        offsetY = e.clientY - dragItem.offsetTop;
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if(isDragging) {
+          dragItem.style.left = `${e.clientX - offsetX}px`;
+          dragItem.style.top = `${e.clientY - offsetY}px`;
+        }
+      });
+
+      document.addEventListener("mousedown", (e) => {
+        isDragging = false;
+        dragItem = null;
+      });
+   */
     </script>
   </body>
 </html>

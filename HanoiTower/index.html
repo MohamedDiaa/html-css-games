@@ -59,29 +59,28 @@
         display: flex;
         justify-content: center;
       }
-    
     </style>
   </head>
   <body>
     <h1>Hanoi Tower</h1>
 
     <div class="select-form">
-      <form action="">
-        <label for="">From</label>
-        <select name="from" id="">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+      <form>
+        <label for="from-option">From</label>
+        <select name="from" id="from-option">
+          <option value="0">1</option>
+          <option value="1">2</option>
+          <option value="2">3</option>
         </select>
 
-        <label for="">to</label>
-        <select name="from" id="">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
+        <label for="to-option">to</label>
+        <select name="from" id="to-option">
+          <option value="0">1</option>
+          <option value="1">2</option>
+          <option value="2">3</option>
         </select>
-        <Button>Go</Button>
       </form>
+      <button onclick="move()">Move</button>
     </div>
     <div class="hanoi-tower-container">
       <div class="tower"></div>
@@ -97,7 +96,7 @@
 
       // Model
       let towers = new Array(3).fill(null).map(() => {
-        new Array(5);
+        new Array(DISK_COUNT);
       });
 
       let dragItem = null;
@@ -113,7 +112,7 @@
       function setup() {
         towers.length = 0;
         towers = new Array(3).fill(null).map(() => {
-          return new Array(DISK_COUNT);
+          return new Array();
         });
 
         for (let i = 0; i < DISK_COUNT; i++) {
@@ -124,27 +123,39 @@
 
       function display() {
         let towersView = document.getElementsByClassName("tower");
+
         if (towersView.length != towers.length) {
           return;
         }
 
-        for (let i = 0; i < towersView.length; i++) {
+        for (let i = 0; i < towers.length; i++) {
+          while (towersView[i].lastElementChild) {
+            towersView[i].removeChild(towersView[i].lastElementChild);
+          }
+
           for (let j = 0; j < towers[i].length; j++) {
             let disk = towers[i][j];
             if (disk) {
               let div = document.createElement("div");
-              let w = towers[i][j].width;
+              let dw = 100;
+              if (towers[i][j].width > 0) {
+                dw = towers[i][j].width;
+              }
+
+              console.log("w", towers[i][j]);
+
+              // let w = towers[i][j].width;
 
               div.className = "disk";
-              div.id = `disk-${w}`;
-              div.style.width = `${w}px`;
+              //    div.id = `disk-${dw}`;
+              div.style.width = `${dw}px`;
               div.style.height = `${DISK_HEIGHT}px`;
-              div.onclick = (event) => {
-                selectDisk(i, j, w);
-              };
-
+              if (i > 0) {
+                //  console.log("i", i, "j", j);
+                console.log("div.style.bottom", `${DISK_HEIGHT * j}`);
+              }
               div.style.bottom = `${DISK_HEIGHT * j}px`;
-              div.style.transform = `translate(${-w / 2 + 10}px, 0)`;
+              div.style.transform = `translate(${-dw / 2 + 10}px, 0)`;
               towersView[i].appendChild(div);
             }
           }
@@ -166,28 +177,21 @@
         dragItem = element;
       }
 
-      /*
-      // Dragging selected element
-      let offsetX = 0, offsetY = 0, isDragging = false;
+      function move() {
+        const to = document.getElementById("to-option");
+        const from = document.getElementById("from-option");
 
-      dragItem.addEventListener("mousedown", (e) => {
-        isDragging = true;
-        offsetX = e.clientX - dragItem.offsetLeft;
-        offsetY = e.clientY - dragItem.offsetTop;
-      });
+        const tovalue = to.value;
+        const fromvalue = from.value;
 
-      document.addEventListener("mousemove", (e) => {
-        if(isDragging) {
-          dragItem.style.left = `${e.clientX - offsetX}px`;
-          dragItem.style.top = `${e.clientY - offsetY}px`;
+        if (to.value != from.value) {
+          if (towers[fromvalue].length > 0) {
+            const selectedDisk = towers[fromvalue].pop();
+            towers[tovalue].push(selectedDisk);
+          }
         }
-      });
-
-      document.addEventListener("mousedown", (e) => {
-        isDragging = false;
-        dragItem = null;
-      });
-   */
+        display();
+      }
     </script>
   </body>
 </html>

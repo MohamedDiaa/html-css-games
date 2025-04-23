@@ -142,18 +142,9 @@
                 dw = towers[i][j].width;
               }
 
-              console.log("w", towers[i][j]);
-
-              // let w = towers[i][j].width;
-
               div.className = "disk";
-              //    div.id = `disk-${dw}`;
               div.style.width = `${dw}px`;
               div.style.height = `${DISK_HEIGHT}px`;
-              if (i > 0) {
-                //  console.log("i", i, "j", j);
-                console.log("div.style.bottom", `${DISK_HEIGHT * j}`);
-              }
               div.style.bottom = `${DISK_HEIGHT * j}px`;
               div.style.transform = `translate(${-dw / 2 + 10}px, 0)`;
               towersView[i].appendChild(div);
@@ -163,7 +154,6 @@
       }
 
       function selectDisk(towerNumber, index, width) {
-        console.log("I am here xxxxxxx");
         if (towers[towerNumber].length - 1 != index) {
           return;
         }
@@ -184,8 +174,19 @@
         const tovalue = to.value;
         const fromvalue = from.value;
 
-        if (to.value != from.value) {
+        if (tovalue != fromvalue) {
+
           if (towers[fromvalue].length > 0) {
+            
+            if(towers[tovalue].length > 0) {
+              const fromLastDisk = towers[fromvalue].at(-1);
+              const toLastDisk = towers[tovalue].at(-1);
+              console.log("from",fromLastDisk.width, "to", toLastDisk.width);
+              if(toLastDisk.width < fromLastDisk.width){
+                return;
+              }
+            }
+
             const selectedDisk = towers[fromvalue].pop();
             towers[tovalue].push(selectedDisk);
           }

@@ -35,15 +35,21 @@
         height: 400px;
         background-color: rgb(155, 150, 150);
       }
+      .tower:hover {
+        border: 4px solid red;
+      }
       .disk {
         position: absolute;
         background-color: black;
         height: 30px;
         border: 1px dotted white;
+        transition: all 0.3s ease;
+
         /* width: 300px; */
         /* bottom: 0px; */
         /* transform: translate(-140px, 0); */
       }
+     
     </style>
   </head>
   <body>
@@ -68,9 +74,7 @@
       let fromTower = -1;
 
       // Model
-      let towers = new Array(3).fill(null).map(() => {
-        new Array(DISK_COUNT);
-      });
+      let towers = new Array(3).fill(null).map(() => []);
 
 
       let towersView = document.getElementsByClassName("tower");
@@ -101,10 +105,10 @@
       function setupTower(towerView) {
         towerView.addEventListener("click", (event) => {
           if (fromTower == -1) {
-            fromTower = towerView.id;
+            fromTower = parseInt(towerView.id);
           } else {
             increament();
-            move(fromTower, towerView.id);
+            move(parseInt(fromTower), parseInt(towerView.id));
             fromTower = -1;
           }
           display();
@@ -117,13 +121,8 @@
         }
 
         for (let i = 0; i < towers.length; i++) {
-          while (towersView[i].lastElementChild) {
-            towersView[i].removeChild(towersView[i].lastElementChild);
-            towersView[i].style.backgroundColor = "rgb(155, 150, 150)";
-          }
-          if (fromTower > -1) {
-            towersView[fromTower].style.backgroundColor = "red";
-          }
+         
+          displayTowerView(towersView[i]);
 
           for (let j = 0; j < towers[i].length; j++) {
             let disk = towers[i][j];
@@ -143,6 +142,19 @@
             }
           }
         }
+      }
+
+      function displayTowerView(towerView) {
+        while (towerView.lastElementChild) {
+             towerView.removeChild(towerView.lastElementChild);
+          }
+          const index = parseInt(towerView.id)
+          if (fromTower == index) {
+            towerView.style.backgroundColor = "red";
+          }
+          else {
+            towerView.style.backgroundColor = "rgb(155, 150, 150)";
+          }
       }
 
       function move(fromvalue, tovalue) {

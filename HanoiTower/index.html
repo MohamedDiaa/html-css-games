@@ -18,7 +18,8 @@
         flex-direction: column;
         justify-content: space-evenly;
       }
-      h1 {
+      h1,
+      h3 {
         display: block;
         text-align: center;
       }
@@ -43,49 +44,17 @@
         /* bottom: 0px; */
         /* transform: translate(-140px, 0); */
       }
-      label {
-        font-size: 30px;
-        margin-left: 10px;
-        margin-right: 10px;
-      }
-      button {
-        margin-left: 20px;
-        font-size: 24px;
-      }
-      option {
-        font-size: 30px;
-      }
-      .select-form {
-        display: flex;
-        justify-content: center;
-      }
     </style>
   </head>
   <body>
-    <h1>Hanoi Tower</h1>
-
-    <div class="select-form">
-      <form>
-        <label for="from-option">From</label>
-        <select name="from" id="from-option">
-          <option value="0">1</option>
-          <option value="1">2</option>
-          <option value="2">3</option>
-        </select>
-
-        <label for="to-option">to</label>
-        <select name="from" id="to-option">
-          <option value="0">1</option>
-          <option value="1">2</option>
-          <option value="2">3</option>
-        </select>
-      </form>
-      <button onclick="move()">Move</button>
+    <div>
+      <h1>Hanoi Tower</h1>
+      <h3 id="moves-counter">Moves Count</h3>
     </div>
     <div class="hanoi-tower-container">
-      <div class="tower"></div>
-      <div class="tower"></div>
-      <div class="tower"></div>
+      <div class="tower" id="0"></div>
+      <div class="tower" id="1"></div>
+      <div class="tower" id="2"></div>
     </div>
 
     <script>
@@ -94,13 +63,17 @@
       const MAX_WIDTH = 300;
       const DISK_HEIGHT = 30;
 
+      let movesCount = 0;
+
       // Model
       let towers = new Array(3).fill(null).map(() => {
         new Array(DISK_COUNT);
       });
 
-      let dragItem = null;
+      let fromTower = -1;
+      let toTower = -1;
 
+      let towersView = document.getElementsByClassName("tower");
       // Functions
       setup();
       display();
@@ -119,11 +92,13 @@
           const d = new Disk(MAX_WIDTH - 40 * i);
           towers[0][i] = d;
         }
+
+        for (let i = 0; i < towers.length; i++) {
+          displayTower(towersView[i]);
+        }
       }
 
       function display() {
-        let towersView = document.getElementsByClassName("tower");
-
         if (towersView.length != towers.length) {
           return;
         }
@@ -131,6 +106,10 @@
         for (let i = 0; i < towers.length; i++) {
           while (towersView[i].lastElementChild) {
             towersView[i].removeChild(towersView[i].lastElementChild);
+            towersView[i].style.backgroundColor = "rgb(155, 150, 150)";
+          }
+          if (fromTower > -1) {
+            towersView[fromTower].style.backgroundColor = "red";
           }
 
           for (let j = 0; j < towers[i].length; j++) {
@@ -153,6 +132,23 @@
         }
       }
 
+      function displayTower(towerView) {
+        towerView.addEventListener("click", (event) => {
+          if (fromTower == -1) {
+            fromTower = towerView.id;
+          } else {
+            increament();
+
+            toTower = towerView.id;
+            console.log("from", fromTower, "to", toTower);
+            move(fromTower, toTower);
+            fromTower = -1;
+            toTower = -1;
+          }
+          display();
+        });
+      }
+
       function selectDisk(towerNumber, index, width) {
         if (towers[towerNumber].length - 1 != index) {
           return;
@@ -167,22 +163,14 @@
         dragItem = element;
       }
 
-      function move() {
-        const to = document.getElementById("to-option");
-        const from = document.getElementById("from-option");
-
-        const tovalue = to.value;
-        const fromvalue = from.value;
-
+      function move(fromvalue, tovalue) {
         if (tovalue != fromvalue) {
-
           if (towers[fromvalue].length > 0) {
-            
-            if(towers[tovalue].length > 0) {
+            if (towers[tovalue].length > 0) {
               const fromLastDisk = towers[fromvalue].at(-1);
               const toLastDisk = towers[tovalue].at(-1);
-              console.log("from",fromLastDisk.width, "to", toLastDisk.width);
-              if(toLastDisk.width < fromLastDisk.width){
+              console.log("from", fromLastDisk.width, "to", toLastDisk.width);
+              if (toLastDisk.width < fromLastDisk.width) {
                 return;
               }
             }
@@ -191,7 +179,13 @@
             towers[tovalue].push(selectedDisk);
           }
         }
-        display();
+        //  display();
+      }
+
+      function increament() {
+        movesCount += 1;
+        const counter = document.getElementById("moves-counter");
+        counter.innerText = `Moves Count ${movesCount}`;
       }
     </script>
   </body>

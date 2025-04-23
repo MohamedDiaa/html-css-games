@@ -64,14 +64,14 @@
       const DISK_HEIGHT = 30;
 
       let movesCount = 0;
+      let gameDone = false;
+      let fromTower = -1;
 
       // Model
       let towers = new Array(3).fill(null).map(() => {
         new Array(DISK_COUNT);
       });
 
-      let fromTower = -1;
-      let toTower = -1;
 
       let towersView = document.getElementsByClassName("tower");
       // Functions
@@ -94,8 +94,21 @@
         }
 
         for (let i = 0; i < towers.length; i++) {
-          displayTower(towersView[i]);
+          setupTower(towersView[i]);
         }
+      }
+
+      function setupTower(towerView) {
+        towerView.addEventListener("click", (event) => {
+          if (fromTower == -1) {
+            fromTower = towerView.id;
+          } else {
+            increament();
+            move(fromTower, towerView.id);
+            fromTower = -1;
+          }
+          display();
+        });
       }
 
       function display() {
@@ -132,37 +145,6 @@
         }
       }
 
-      function displayTower(towerView) {
-        towerView.addEventListener("click", (event) => {
-          if (fromTower == -1) {
-            fromTower = towerView.id;
-          } else {
-            increament();
-
-            toTower = towerView.id;
-            console.log("from", fromTower, "to", toTower);
-            move(fromTower, toTower);
-            fromTower = -1;
-            toTower = -1;
-          }
-          display();
-        });
-      }
-
-      function selectDisk(towerNumber, index, width) {
-        if (towers[towerNumber].length - 1 != index) {
-          return;
-        }
-
-        let id = `disk-${width}`;
-        let element = document.getElementById(id).cloneNode();
-        document.append(element);
-        element.style.left = `100px`;
-        element.style.top = `100px`;
-        element.style.backgroundColor = "red";
-        dragItem = element;
-      }
-
       function move(fromvalue, tovalue) {
         if (tovalue != fromvalue) {
           if (towers[fromvalue].length > 0) {
@@ -177,6 +159,7 @@
 
             const selectedDisk = towers[fromvalue].pop();
             towers[tovalue].push(selectedDisk);
+            gameisFinished();
           }
         }
         //  display();
@@ -186,6 +169,13 @@
         movesCount += 1;
         const counter = document.getElementById("moves-counter");
         counter.innerText = `Moves Count ${movesCount}`;
+      }
+
+      function gameisFinished() {
+        if (towers.at(-1).length == DISK_COUNT) {
+          const counter = document.getElementById("moves-counter");
+          counter.innerText = `Congratulations game is finished with ${movesCount}`;
+        }
       }
     </script>
   </body>

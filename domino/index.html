@@ -86,12 +86,11 @@
         right: 0;
       }
       .current-player-side {
-        background-color: aquamarine;
-        width: 70%;
-        min-height: 200px;
+        /* background-color: aquamarine; */
         position: absolute;
-        bottom: 0;
-        left: 15%;
+        bottom: 30px;
+        left: 50%;
+        transform: translate(-50%, 0%);
 
         justify-content: flex-start;
         display: flex;
@@ -99,11 +98,10 @@
         flex-direction: row;
       }
       .unused-cards-side {
-        background-color: blue;
-        width: 100px;
-        min-height: 00px;
+        /* background-color: blue; */
+        width: 120px;
         position: absolute;
-        left: 0;
+        left: 0px;
 
         justify-content: flex-start;
         display: flex;
@@ -112,12 +110,11 @@
       }
 
       .opposite-player-side {
-        background-color: aquamarine;
-        width: 70%;
-        min-height: 200px;
+        /* background-color: aquamarine; */
+        top: 30px;
+        left: 50%;
+        transform: translate(-50%, 0%);
         position: absolute;
-        top: 0;
-        left: 15%;
 
         justify-content: flex-start;
         display: flex;
@@ -358,13 +355,11 @@
         for (let i = 0; i < 7; i++) {
           let [a, b] = dominoList.pop();
           player1.push([a, b]);
-    
         }
 
         for (let i = 0; i < 7; i++) {
           let [a, b] = dominoList.pop();
           player2.push([a, b]);
-    
         }
 
         display();
@@ -377,19 +372,28 @@
         for (let i = 0; i < dominoList.length; i++) {
           const [a, b] = dominoList[i];
           const card = createDominoCard(a, b, false);
+          card.style.transform = "rotate(90deg)";
           unusedCardsSide.appendChild(card);
         }
 
-        const currentPlayerSide = document.querySelector(".current-player-side");
+        const currentPlayerSide = document.querySelector(
+          ".current-player-side"
+        );
+        removeChildren(currentPlayerSide);
+
         for (let i = 0; i < player1.length; i++) {
-          const [a, b] = player1[i]; 
+          const [a, b] = player1[i];
           const card = createDominoCard(a, b, true);
           currentPlayerSide.appendChild(card);
         }
 
-        const oppositePlayerSide = document.querySelector(".opposite-player-side");
+        const oppositePlayerSide = document.querySelector(
+          ".opposite-player-side"
+        );
+        removeChildren(oppositePlayerSide);
+
         for (let i = 0; i < player2.length; i++) {
-          const [a, b] = player2[i]; 
+          const [a, b] = player2[i];
           const card = createDominoCard(a, b, true);
           oppositePlayerSide.appendChild(card);
         }

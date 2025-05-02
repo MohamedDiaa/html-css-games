@@ -78,7 +78,7 @@
     </style>
   </head>
   <body>
-    <div class="domino-card">
+    <!-- <div class="domino-card">
       <div class="domino-content-wrapper">
         <div class="section">
           <div class="dot middle-center"></div>
@@ -99,9 +99,58 @@
         <div class="divider"></div>
         <div class="section"></div>
       </div>
-    </div>
+    </div> -->
 
     <script>
+      const card = createDominoCard(6, 6);
+      const body = document.querySelector("body");
+      body.appendChild(card);
+
+      function createDominoCard(value1, value2) {
+        let card = document.createElement("div");
+        card.classList.add("domino-card");
+
+        let wrapper = document.createElement("div");
+        wrapper.classList.add("domino-content-wrapper");
+
+        const section1 = createSection(value1);
+        wrapper.appendChild(section1);
+
+        const divider = document.createElement("div");
+        divider.classList.add("divider");
+        wrapper.appendChild(divider);
+
+        const section2 = createSection(value2);
+        wrapper.appendChild(section2);
+
+        card.appendChild(wrapper);
+        return card;
+      }
+
+      function createSection(count) {
+        if (count === 1) {
+          return createOne();
+        } else if (count === 2) {
+          return createTwo();
+        } else if (count === 3) {
+          return createThree();
+        } else if (count === 4) {
+          return createFour();
+        } else if (count === 5) {
+          return createFive();
+        } else if (count === 6) {
+          return createSix();
+        } else {
+          return createEmpty();
+        }
+      }
+
+      function createEmpty() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+        return el;
+      }
+
       function createOne() {
         let el = document.createElement("div");
         el.classList.add("section");
@@ -110,6 +159,8 @@
         child.classList.add("dot");
         child.classList.add("middle-center");
         el.appendChild(child);
+
+        return el;
       }
 
       function createTwo() {
@@ -125,6 +176,8 @@
         child.classList.add("dot");
         child.classList.add("bottom-left");
         el.appendChild(child);
+
+        return el;
       }
 
       function createThree() {
@@ -145,6 +198,8 @@
         child.classList.add("dot");
         child.classList.add("bottom-left");
         el.appendChild(child);
+
+        return el;
       }
 
       function createFour() {
@@ -170,6 +225,8 @@
         child.classList.add("dot");
         child.classList.add("bottom-right");
         el.appendChild(child);
+
+        return el;
       }
 
       function createFive() {
@@ -177,24 +234,26 @@
         el.classList.add("section");
 
         let child = document.createElement("div");
-        child.classList.add(["dot", "top-left"]);
+        child.classList.add("dot", "top-left");
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "top-right"]);
+        child.classList.add("dot", "top-right");
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "middle-center"]);
+        child.classList.add("dot", "middle-center");
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "bottom-left"]);
+        child.classList.add("dot", "bottom-left");
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "bottom-right"]);
+        child.classList.add("dot", "bottom-right");
         el.appendChild(child);
+
+        return el;
       }
 
       function createSix() {
@@ -202,28 +261,30 @@
         el.classList.add("section");
 
         let child = document.createElement("div");
-        child.classList.add(["dot", "top-left"]);
+        child.classList.add(...["dot", "top-left"]);
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "top-right"]);
+        child.classList.add(...["dot", "top-right"]);
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "middle-left"]);
+        child.classList.add(...["dot", "middle-left"]);
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "middle-right"]);
+        child.classList.add(...["dot", "middle-right"]);
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "bottom-left"]);
+        child.classList.add(...["dot", "bottom-left"]);
         el.appendChild(child);
 
         child = document.createElement("div");
-        child.classList.add(["dot", "bottom-right"]);
+        child.classList.add(...["dot", "bottom-right"]);
         el.appendChild(child);
+
+        return el;
       }
     </script>
   </body>

@@ -11,15 +11,14 @@
         box-sizing: border-box;
       }
       :root {
-        --card-height:100px;
+        --card-height: 100px;
         --card-width: 60px;
         --dot-height: 5px;
         --dot-width: 5px;
-        
       }
       body {
         background-color: rgba(244, 244, 226, 0.01);
-        justify-content: space-evenly;
+        justify-content: flex-start;
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
@@ -31,6 +30,7 @@
         background-color: rgb(250, 197, 127);
         padding: 5px 10px;
         margin-bottom: 10px;
+        margin-left: 10px;
       }
       .domino-content-wrapper {
         height: inherit;
@@ -53,8 +53,8 @@
       .dot {
         position: absolute;
         background-color: black;
-        width: var( --dot-height);
-        height: var( --dot-width);
+        width: var(--dot-height);
+        height: var(--dot-width);
         border-radius: 5px;
       }
       .top-left {
@@ -66,20 +66,21 @@
         right: 0;
       }
       .middle-center {
-        top: calc(50% - var(--dot-height)/2);
-        left: calc(50% - var(--dot-width)/2);
+        top: calc(50% - var(--dot-height) / 2);
+        left: calc(50% - var(--dot-width) / 2);
       }
       .middle-left {
-        top: calc(50% - var(--dot-height)/2);
+        top: calc(50% - var(--dot-height) / 2);
         left: 0;
       }
       .middle-right {
-        top: calc(50% - var(--dot-width)/2);
+        top: calc(50% - var(--dot-width) / 2);
         right: 0;
       }
       .bottom-left {
-        bottom: 5px;                                                                                                                                             
+        bottom: 5px;
         left: 0;
+   
       }
       .bottom-right {
         bottom: 5px;
@@ -102,7 +103,7 @@
 
       for (let i = 0; i < dominoList.length; i++) {
         const [a, b] = dominoList[i];
-        const card = createDominoCard(a, b, true);
+        const card = createDominoCard(a, b, false);
         body.appendChild(card);
       }
 
@@ -110,10 +111,10 @@
         let card = document.createElement("div");
         card.classList.add("domino-card");
 
+        
         let wrapper = document.createElement("div");
         wrapper.classList.add("domino-content-wrapper");
 
-        if (show) {
           const section1 = createSection(value1);
           wrapper.appendChild(section1);
 
@@ -123,7 +124,13 @@
 
           const section2 = createSection(value2);
           wrapper.appendChild(section2);
-        }
+        
+          wrapper.style.display = show ? "block" : "none" ;
+
+
+        card.onclick = (event) => {
+          wrapper.style.display = "block";
+        };
 
         card.appendChild(wrapper);
         return card;

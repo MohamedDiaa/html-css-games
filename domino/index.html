@@ -80,53 +80,104 @@
       .bottom-left {
         bottom: 5px;
         left: 0;
-   
       }
       .bottom-right {
         bottom: 5px;
         right: 0;
       }
+      .current-player-side {
+        background-color: aquamarine;
+        width: 70%;
+        min-height: 200px;
+        position: absolute;
+        bottom: 0;
+        left: 15%;
+
+        justify-content: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+      .unused-cards-side {
+        background-color: blue;
+        width: 100px;
+        min-height: 00px;
+        position: absolute;
+        left: 0;
+
+        justify-content: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+
+      .opposite-player-side {
+        background-color: aquamarine;
+        width: 70%;
+        min-height: 200px;
+        position: absolute;
+        top: 0;
+        left: 15%;
+
+        justify-content: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+      }
+
+      button {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background-color: burlywood;
+        padding: 20px;
+        border-radius: 5px;
+      }
     </style>
   </head>
   <body>
+    <div class="unused-cards-side"></div>
+    <div class="opposite-player-side"></div>
+    <div class="current-player-side"></div>
+    <button onclick="start()">Start</button>
+
     <script>
-      const body = document.querySelector("body");
       let dominoList = [];
+      let player1 = [];
+      let player2 = [];
 
-      for (let i = 0; i < 7; i++) {
-        for (let j = i; j < 7; j++) {
-          dominoList.push([i, j]);
+      setup();
+
+      function setup() {
+        for (let i = 0; i < 7; i++) {
+          for (let j = i; j < 7; j++) {
+            dominoList.push([i, j]);
+          }
         }
-      }
 
-      dominoList = shuffleArray(dominoList);
+        dominoList = shuffleArray(dominoList);
 
-      for (let i = 0; i < dominoList.length; i++) {
-        const [a, b] = dominoList[i];
-        const card = createDominoCard(a, b, false);
-        body.appendChild(card);
+        display();
       }
 
       function createDominoCard(value1, value2, show) {
         let card = document.createElement("div");
         card.classList.add("domino-card");
 
-        
         let wrapper = document.createElement("div");
         wrapper.classList.add("domino-content-wrapper");
 
-          const section1 = createSection(value1);
-          wrapper.appendChild(section1);
+        const section1 = createSection(value1);
+        wrapper.appendChild(section1);
 
-          const divider = document.createElement("div");
-          divider.classList.add("divider");
-          wrapper.appendChild(divider);
+        const divider = document.createElement("div");
+        divider.classList.add("divider");
+        wrapper.appendChild(divider);
 
-          const section2 = createSection(value2);
-          wrapper.appendChild(section2);
-        
-          wrapper.style.display = show ? "block" : "none" ;
+        const section2 = createSection(value2);
+        wrapper.appendChild(section2);
 
+        wrapper.style.display = show ? "block" : "none";
 
         card.onclick = (event) => {
           wrapper.style.display = "block";
@@ -294,6 +345,60 @@
         el.appendChild(child);
 
         return el;
+      }
+
+      function start() {
+        const button = document.querySelector("button");
+        button.style.display = "none";
+
+        fillPlayerCards();
+      }
+
+      function fillPlayerCards() {
+        for (let i = 0; i < 7; i++) {
+          let [a, b] = dominoList.pop();
+          player1.push([a, b]);
+    
+        }
+
+        for (let i = 0; i < 7; i++) {
+          let [a, b] = dominoList.pop();
+          player2.push([a, b]);
+    
+        }
+
+        display();
+      }
+
+      function display() {
+        const unusedCardsSide = document.querySelector(".unused-cards-side");
+        removeChildren(unusedCardsSide);
+
+        for (let i = 0; i < dominoList.length; i++) {
+          const [a, b] = dominoList[i];
+          const card = createDominoCard(a, b, false);
+          unusedCardsSide.appendChild(card);
+        }
+
+        const currentPlayerSide = document.querySelector(".current-player-side");
+        for (let i = 0; i < player1.length; i++) {
+          const [a, b] = player1[i]; 
+          const card = createDominoCard(a, b, true);
+          currentPlayerSide.appendChild(card);
+        }
+
+        const oppositePlayerSide = document.querySelector(".opposite-player-side");
+        for (let i = 0; i < player2.length; i++) {
+          const [a, b] = player2[i]; 
+          const card = createDominoCard(a, b, true);
+          oppositePlayerSide.appendChild(card);
+        }
+      }
+
+      function removeChildren(htmlElement) {
+        while (htmlElement.lastElementChild) {
+          htmlElement.removeChild(htmlElement.lastElementChild);
+        }
       }
 
       //Fisher–Yates Shuffle Implementation

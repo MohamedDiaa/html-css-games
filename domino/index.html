@@ -129,8 +129,11 @@
         width: 1000px;
         left: 50%;
         transform: translate(-50%, 0%);
-        border: 2px solid rgba(25, 25, 25,0.25);
+        border: 2px solid rgba(25, 25, 25, 0.25);
         border-radius: 15px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
       }
 
       button {
@@ -396,6 +399,13 @@
           const [a, b] = player1[i];
           const card = createDominoCard(a, b, true);
           currentPlayerSide.appendChild(card);
+
+          card.onclick = (event) => {
+            playCard(a, b);
+            player1.splice(i, 1);
+
+            display();
+          };
         }
 
         const oppositePlayerSide = document.querySelector(
@@ -407,6 +417,12 @@
           const [a, b] = player2[i];
           const card = createDominoCard(a, b, true);
           oppositePlayerSide.appendChild(card);
+
+          card.onclick = (event) => {
+            playCard(a, b);
+            player2.splice(i, 1);
+            display();
+          };
         }
       }
 
@@ -414,6 +430,12 @@
         while (htmlElement.lastElementChild) {
           htmlElement.removeChild(htmlElement.lastElementChild);
         }
+      }
+
+      function playCard(value1, value2) {
+        const playground = document.querySelector(".playground");
+        const card = createDominoCard(value1, value2, true);
+        playground.appendChild(card);
       }
 
       //Fisher–Yates Shuffle Implementation

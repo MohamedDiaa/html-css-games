@@ -157,6 +157,7 @@
       let dominoList = [];
       let player1 = [];
       let player2 = [];
+      let turnToPlay = 0; // 0 : Player1 ,  1 : Player2
 
       setup();
 
@@ -190,9 +191,9 @@
 
         wrapper.style.display = show ? "block" : "none";
 
-        card.onclick = (event) => {
-          wrapper.style.display = "block";
-        };
+        // card.onclick = (event) => {
+        //   wrapper.style.display = "block";
+        // };
 
         card.appendChild(wrapper);
         return card;
@@ -388,6 +389,17 @@
           const card = createDominoCard(a, b, false);
           card.style.transform = "rotate(90deg)";
           unusedCardsSide.appendChild(card);
+
+          card.onclick = (event) => {
+            dominoList.splice(i, 1);
+            if (turnToPlay === 0) {
+              player1.push([a, b]);
+            } else {
+              player2.push([a, b]);
+            }
+
+            display();
+          };
         }
 
         const currentPlayerSide = document.querySelector(

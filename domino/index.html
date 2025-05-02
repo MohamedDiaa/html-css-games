@@ -10,6 +10,13 @@
         margin: 0;
         box-sizing: border-box;
       }
+      :root {
+        --card-height:100px;
+        --card-width: 60px;
+        --dot-height: 5px;
+        --dot-width: 5px;
+        
+      }
       body {
         background-color: rgba(244, 244, 226, 0.01);
         justify-content: space-evenly;
@@ -18,8 +25,8 @@
         flex-direction: row;
       }
       .domino-card {
-        width: 120px;
-        height: 200px;
+        width: var(--card-width);
+        height: var(--card-height);
         border-radius: 5px;
         background-color: rgb(250, 197, 127);
         padding: 5px 10px;
@@ -46,9 +53,9 @@
       .dot {
         position: absolute;
         background-color: black;
-        width: 20px;
-        height: 20px;
-        border-radius: 10px;
+        width: var( --dot-height);
+        height: var( --dot-width);
+        border-radius: 5px;
       }
       .top-left {
         top: 5px;
@@ -59,19 +66,19 @@
         right: 0;
       }
       .middle-center {
-        top: calc(50% - 10px);
-        left: calc(50% - 10px);
+        top: calc(50% - var(--dot-height)/2);
+        left: calc(50% - var(--dot-width)/2);
       }
       .middle-left {
-        top: calc(50% - 10px);
+        top: calc(50% - var(--dot-height)/2);
         left: 0;
       }
       .middle-right {
-        top: calc(50% - 10px);
+        top: calc(50% - var(--dot-width)/2);
         right: 0;
       }
       .bottom-left {
-        bottom: 5px;
+        bottom: 5px;                                                                                                                                             
         left: 0;
       }
       .bottom-right {

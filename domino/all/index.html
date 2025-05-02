@@ -83,40 +83,30 @@
   <body>
     <script>
       const body = document.querySelector("body");
-      let dominoList = [];
 
       for (let i = 0; i < 7; i++) {
         for (let j = i; j < 7; j++) {
-          dominoList.push([i, j]);
+          const card = createDominoCard(i, j);
+          body.appendChild(card);
         }
       }
 
-      dominoList = shuffleArray(dominoList);
-
-      for (let i = 0; i < dominoList.length; i++) {
-        const [a, b] = dominoList[i];
-        const card = createDominoCard(a, b, true);
-        body.appendChild(card);
-      }
-
-      function createDominoCard(value1, value2, show) {
+      function createDominoCard(value1, value2) {
         let card = document.createElement("div");
         card.classList.add("domino-card");
 
         let wrapper = document.createElement("div");
         wrapper.classList.add("domino-content-wrapper");
 
-        if (show) {
-          const section1 = createSection(value1);
-          wrapper.appendChild(section1);
+        const section1 = createSection(value1);
+        wrapper.appendChild(section1);
 
-          const divider = document.createElement("div");
-          divider.classList.add("divider");
-          wrapper.appendChild(divider);
+        const divider = document.createElement("div");
+        divider.classList.add("divider");
+        wrapper.appendChild(divider);
 
-          const section2 = createSection(value2);
-          wrapper.appendChild(section2);
-        }
+        const section2 = createSection(value2);
+        wrapper.appendChild(section2);
 
         card.appendChild(wrapper);
         return card;
@@ -280,17 +270,6 @@
         el.appendChild(child);
 
         return el;
-      }
-
-      //Fisher–Yates Shuffle Implementation
-      function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          // Generate a random index from 0 to i
-          const j = Math.floor(Math.random() * (i + 1));
-          // Swap elements at indices i and j
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
       }
     </script>
   </body>

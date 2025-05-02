@@ -47,23 +47,31 @@
         height: 20px;
         border-radius: 10px;
       }
-      .one {
+      .top-left {
         top: 5px;
         left: 0;
       }
-      .two {
+      .top-right {
         top: 5px;
         right: 0;
       }
-      .three {
+      .middle-center {
         top: calc(50% - 10px);
         left: calc(50% - 10px);
       }
-      .fourth {
+      .middle-left {
+        top: calc(50% - 10px);
+        left: 0;
+      }
+      .middle-right {
+        top: calc(50% - 10px);
+        right: 0;
+      }
+      .bottom-left {
         bottom: 5px;
         left: 0;
       }
-      .fifth {
+      .bottom-right {
         bottom: 5px;
         right: 0;
       }
@@ -73,7 +81,7 @@
     <div class="domino-card">
       <div class="domino-content-wrapper">
         <div class="section">
-          <div class="dot three"></div>
+          <div class="dot middle-center"></div>
         </div>
         <div class="divider"></div>
         <div class="section"></div>
@@ -82,27 +90,141 @@
     <div class="domino-card">
       <div class="domino-content-wrapper">
         <div class="section">
-          <div class="dot one"></div>
-          <div class="dot two"></div>
-          <div class="dot three"></div>
-          <div class="dot fourth"></div>
-          <div class="dot fifth"></div>
+          <div class="dot top-left"></div>
+          <div class="dot top-right"></div>
+          <div class="dot middle-center"></div>
+          <div class="dot bottom-left"></div>
+          <div class="dot bottom-right"></div>
         </div>
         <div class="divider"></div>
         <div class="section"></div>
       </div>
     </div>
 
-    <div class="domino-card">
-      <div class="domino-content-wrapper">
-        <div class="section">
-          <div class="dot one"></div>
-          <div class="dot three"></div>
-          <div class="dot fifth"></div>
-        </div>
-        <div class="divider"></div>
-        <div class="section"></div>
-      </div>
-    </div>
+    <script>
+      function createOne() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+
+        let child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("middle-center");
+        el.appendChild(child);
+      }
+
+      function createTwo() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+
+        let child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("top-right");
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("bottom-left");
+        el.appendChild(child);
+      }
+
+      function createThree() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+
+        let child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("top-right");
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("middle-center");
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("bottom-left");
+        el.appendChild(child);
+      }
+
+      function createFour() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+
+        let child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("top-left");
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("top-right");
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("bottom-left");
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add("dot");
+        child.classList.add("bottom-right");
+        el.appendChild(child);
+      }
+
+      function createFive() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+
+        let child = document.createElement("div");
+        child.classList.add(["dot", "top-left"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "top-right"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "middle-center"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "bottom-left"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "bottom-right"]);
+        el.appendChild(child);
+      }
+
+      function createSix() {
+        let el = document.createElement("div");
+        el.classList.add("section");
+
+        let child = document.createElement("div");
+        child.classList.add(["dot", "top-left"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "top-right"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "middle-left"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "middle-right"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "bottom-left"]);
+        el.appendChild(child);
+
+        child = document.createElement("div");
+        child.classList.add(["dot", "bottom-right"]);
+        el.appendChild(child);
+      }
+    </script>
   </body>
 </html>

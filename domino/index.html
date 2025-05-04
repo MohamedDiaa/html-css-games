@@ -30,8 +30,6 @@
         border-radius: 5px;
         background-color: rgb(250, 197, 127);
         padding: 5px 10px;
-        margin-bottom: 10px;
-        margin-left: 10px;
       }
       .domino-content-wrapper {
         height: inherit;
@@ -97,17 +95,21 @@
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
+        gap: 10px;
+
       }
       .unused-cards-side {
         /* background-color: blue; */
-        width: 120px;
         position: absolute;
-        left: 0px;
+        left: 10px;
 
         justify-content: flex-start;
         display: flex;
         flex-wrap: wrap;
-        flex-direction: row;
+        flex-direction: column;
+        height: 165vh;
+        gap: 10px;
+        /* gap: 0px; */
       }
 
       .opposite-player-side {
@@ -121,6 +123,8 @@
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
+        gap: 10px;
+
       }
       .playground {
         position: absolute;
@@ -172,7 +176,7 @@
         display();
       }
 
-      function createDominoCard(value1, value2, show) {
+      function createDominoCard(value1, value2, show, vertical = true) {
         let card = document.createElement("div");
         card.classList.add("domino-card");
 
@@ -196,6 +200,12 @@
         // };
 
         card.appendChild(wrapper);
+
+        if(!vertical) {
+          card.style.transform = "rotate(90deg)";
+
+        }
+        
         return card;
       }
 
@@ -386,8 +396,7 @@
 
         for (let i = 0; i < dominoList.length; i++) {
           const [a, b] = dominoList[i];
-          const card = createDominoCard(a, b, false);
-          card.style.transform = "rotate(90deg)";
+          const card = createDominoCard(a, b, false, true);
           unusedCardsSide.appendChild(card);
 
           card.onclick = (event) => {

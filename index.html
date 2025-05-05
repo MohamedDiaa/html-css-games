@@ -12,10 +12,16 @@
         }
         body {
             background-color: rgba(239, 167, 167, 0.3);   
+        }
+        h1 {
+            text-align: center;
+        }
+        .games{
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: row;
+            justify-content: space-evenly;
             align-items: center;
+
         }
         a {
             text-decoration: none;
@@ -37,18 +43,28 @@
 
     <h1>HTML CSS and JS Games</h1>
 
-    <a href="/MineSweeper/index.html">
-        <div>
-            <h3>MineSweeper</h3>
-            <img src="/assets/minesweeper.png" alt="minesweeper">
-        </div>
-    </a>
-    <a href="/HanoiTower/index.html">
-        <div>
-            <h3>Hanoi Tower</h3>
-            <img src="/assets/hanoitower.png" alt="hanoi tower">
-        </div>
-    </a>
+    <div class="games">
+        <a href="/MineSweeper/index.html">
+            <div>
+                <h3>MineSweeper</h3>
+                <img src="/assets/minesweeper.png" alt="minesweeper">
+            </div>
+        </a>
+        <a href="/HanoiTower/index.html">
+            <div>
+                <h3>Hanoi Tower</h3>
+                <img src="/assets/hanoitower.png" alt="hanoi tower">
+            </div>
+        </a>
+        <a href="/domino/index.html">
+            <div>
+                <h3>Domino</h3>
+                <img src="/assets/domino.png" alt="hanoi tower">
+            </div>
+        </a>
+    
+    </div>
+ 
 
 </body>
 </html>

@@ -15,14 +15,14 @@
         --card-width: 60px;
         --dot-height: 5px;
         --dot-width: 5px;
+        --playground-width: 900px;
+        --default-color: rgba(250, 197, 127, 0.3);
       }
       body {
-        background-color: rgba(244, 244, 226, 0.01);
-        justify-content: flex-start;
+        justify-content: center;
         display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        background-color: rgba(250, 197, 127, 0.3);
+        background-color: var(--default-color);
+        align-content: center;
       }
       .domino-card {
         width: var(--card-width);
@@ -84,20 +84,7 @@
         bottom: 5px;
         right: 0;
       }
-      .current-player-side {
-        /* background-color: aquamarine; */
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translate(-50%, 0%);
 
-        justify-content: flex-start;
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        gap: 10px;
-
-      }
       .unused-cards-side {
         /* background-color: blue; */
         position: absolute;
@@ -111,28 +98,39 @@
         gap: 10px;
         /* gap: 0px; */
       }
-
-      .opposite-player-side {
-        /* background-color: aquamarine; */
-        top: 30px;
-        left: 50%;
-        transform: translate(-50%, 0%);
-        position: absolute;
-
+      .container {
+        width: var(--playground-width);
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        min-height: 100vh;
+        gap: 10px;
+      }
+      .current-player-side {
+        width: inherit;
         justify-content: flex-start;
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
         gap: 10px;
-
+        border-radius: 5px;
+        padding: 10px;
+        background-color: var(--default-color);
       }
+      .opposite-player-side {
+        width: inherit;
+        justify-content: flex-start;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        gap: 10px;
+        background-color: var(--default-color);
+      }
+
       .playground {
-        position: absolute;
-        top: 135px;
-        bottom: 150px;
-        width: 900px;
-        left: 50%;
-        transform: translate(-50%, 0%);
+        /* background-color: rebeccapurple; */
+        min-height: 400px;
+        width: inherit;
         border: 2px solid rgba(25, 25, 25, 0.25);
         border-radius: 15px;
         display: flex;
@@ -151,17 +149,21 @@
     </style>
   </head>
   <body>
+    <div class="container">
+      <div class="opposite-player-side"></div>
+      <div class="playground"></div>
+      <div class="current-player-side"></div>
+    </div>
     <div class="unused-cards-side"></div>
-    <div class="opposite-player-side"></div>
-    <div class="playground"></div>
-    <div class="current-player-side"></div>
     <button onclick="start()">Start</button>
 
     <script>
       let dominoList = [];
-      let player1 = [];
-      let player2 = [];
-      let turnToPlay = 0; // 0 : Player1 ,  1 : Player2
+      let player1Cards = [];
+      let player2Cards = [];
+      let turnToPlay = 0; // 0 : player1 ,  1 : player2
+      const player1 = 0;
+      const player2 = 1;
 
       setup();
 
@@ -201,11 +203,10 @@
 
         card.appendChild(wrapper);
 
-        if(!vertical) {
+        if (!vertical) {
           card.style.transform = "rotate(90deg)";
-
         }
-        
+
         return card;
       }
 
@@ -379,18 +380,20 @@
       function fillPlayerCards() {
         for (let i = 0; i < 7; i++) {
           let [a, b] = dominoList.pop();
-          player1.push([a, b]);
+          player1Cards.push([a, b]);
         }
 
         for (let i = 0; i < 7; i++) {
           let [a, b] = dominoList.pop();
-          player2.push([a, b]);
+          player2Cards.push([a, b]);
         }
 
         display();
       }
 
       function display() {
+        // Unused cards config
+
         const unusedCardsSide = document.querySelector(".unused-cards-side");
         removeChildren(unusedCardsSide);
 
@@ -401,48 +404,66 @@
 
           card.onclick = (event) => {
             dominoList.splice(i, 1);
-            if (turnToPlay === 0) {
-              player1.push([a, b]);
+            if (turnToPlay === player1) {
+              player1Cards.push([a, b]);
             } else {
-              player2.push([a, b]);
+              player2Cards.push([a, b]);
             }
 
             display();
           };
         }
 
+        // Current player config
         const currentPlayerSide = document.querySelector(
           ".current-player-side"
         );
+
+        currentPlayerSide.style.border =
+          turnToPlay === player1 ? "1px solid black" : "";
+
         removeChildren(currentPlayerSide);
 
-        for (let i = 0; i < player1.length; i++) {
-          const [a, b] = player1[i];
+        for (let i = 0; i < player1Cards.length; i++) {
+          const [a, b] = player1Cards[i];
           const card = createDominoCard(a, b, true);
           currentPlayerSide.appendChild(card);
 
           card.onclick = (event) => {
-            playCard(a, b);
-            player1.splice(i, 1);
+            if (turnToPlay === player1) {
+              playCard(a, b);
+              player1Cards.splice(i, 1);
 
-            display();
+              togglePlayer();
+              display();
+            }
           };
         }
 
+        // Opposite player config
         const oppositePlayerSide = document.querySelector(
           ".opposite-player-side"
         );
+
+        oppositePlayerSide.style.border =
+          turnToPlay === player2 ? "1px solid black" : "";
+
         removeChildren(oppositePlayerSide);
 
-        for (let i = 0; i < player2.length; i++) {
-          const [a, b] = player2[i];
+        for (let i = 0; i < player2Cards.length; i++) {
+          const [a, b] = player2Cards[i];
           const card = createDominoCard(a, b, true);
           oppositePlayerSide.appendChild(card);
 
           card.onclick = (event) => {
-            playCard(a, b);
-            player2.splice(i, 1);
-            display();
+            if (turnToPlay === player2) {
+              playCard(a, b);
+              player2Cards.splice(i, 1);
+
+              togglePlayer();
+
+              display();
+            }
           };
         }
       }
@@ -457,6 +478,10 @@
         const playground = document.querySelector(".playground");
         const card = createDominoCard(value1, value2, true);
         playground.appendChild(card);
+      }
+
+      function togglePlayer() {
+        turnToPlay = turnToPlay === player1 ? player2 : player1;
       }
 
       //Fisher–Yates Shuffle Implementation

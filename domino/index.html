@@ -133,9 +133,10 @@
         width: inherit;
         border: 2px solid rgba(25, 25, 25, 0.25);
         border-radius: 15px;
-        display: flex;
+        /* display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
+        flex-wrap: wrap; */
+        position: relative;
       }
 
       button {
@@ -165,7 +166,23 @@
       const player1 = 0;
       const player2 = 1;
 
+      let playgroundCards = []; // card [1,2]  position [10px, 20px] = [1,2,10,20] [a, b, x,y]
+      let leftCard = null; //[0,0, 0px,0px]
+      let rightCard = null; //[0,0, 0px,0px]
+
+      const oppositePlayerSide = document.querySelector(
+        ".opposite-player-side"
+      );
+      const unusedCardsSide = document.querySelector(".unused-cards-side");
+      const currentPlayerSide = document.querySelector(".current-player-side");
+      const playground = document.querySelector(".playground");
+      const cardHeight = 100;
+      const cardWidth = 60;
+
       setup();
+
+      // Section
+      // Game Play
 
       function setup() {
         for (let i = 0; i < 7; i++) {
@@ -177,6 +194,146 @@
         dominoList = shuffleArray(dominoList);
         display();
       }
+
+      function start() {
+        const button = document.querySelector("button");
+        button.style.display = "none";
+
+        fillPlayerCards();
+      }
+
+      function fillPlayerCards() {
+        for (let i = 0; i < 7; i++) {
+          let [a, b] = dominoList.pop();
+          player1Cards.push([a, b]);
+        }
+
+        for (let i = 0; i < 7; i++) {
+          let [a, b] = dominoList.pop();
+          player2Cards.push([a, b]);
+        }
+
+        display();
+      }
+
+      function display() {
+        // ===========================================
+        // Unused cards config
+        // ===========================================
+        removeChildren(unusedCardsSide);
+
+        for (let i = 0; i < dominoList.length; i++) {
+          const [a, b] = dominoList[i];
+          const card = createDominoCard(a, b, false, true);
+          unusedCardsSide.appendChild(card);
+
+          card.onclick = (event) => {
+            dominoList.splice(i, 1);
+            if (turnToPlay === player1) {
+              player1Cards.push([a, b]);
+            } else {
+              player2Cards.push([a, b]);
+            }
+
+            display();
+          };
+        }
+
+        // ===========================================
+        // Current player config
+        // ===========================================
+
+        currentPlayerSide.style.border =
+          turnToPlay === player1 ? "1px solid black" : "";
+
+        removeChildren(currentPlayerSide);
+
+        for (let i = 0; i < player1Cards.length; i++) {
+          const [a, b] = player1Cards[i];
+          const card = createDominoCard(a, b, true);
+          currentPlayerSide.appendChild(card);
+
+          card.onclick = (event) => {
+            if (turnToPlay === player1) {
+              playCard(a, b);
+              player1Cards.splice(i, 1);
+
+              togglePlayer();
+              display();
+            }
+          };
+        }
+        // ===========================================
+        // Opposite player config
+        // ===========================================
+
+        oppositePlayerSide.style.border =
+          turnToPlay === player2 ? "1px solid black" : "";
+
+        removeChildren(oppositePlayerSide);
+
+        for (let i = 0; i < player2Cards.length; i++) {
+          const [a, b] = player2Cards[i];
+          const card = createDominoCard(a, b, true);
+          oppositePlayerSide.appendChild(card);
+
+          card.onclick = (event) => {
+            if (turnToPlay === player2) {
+              playCard(a, b);
+              player2Cards.splice(i, 1);
+
+              togglePlayer();
+
+              display();
+            }
+          };
+        }
+
+        // ===========================================
+        // Playground
+        // ===========================================
+
+        for (let i = 0; i < playgroundCards.length; i++) {
+          const [a, b, x, y] = playgroundCards[i];
+          console.log("pvdhwoiuherowhoifu", a,b,x,y);
+          const card = createDominoCard(a, b, true);
+          card.style.position = "absolute";
+          card.style.left = `${x}px`;
+          card.style.top = `${y}px`;
+
+          if (a === b) {
+            card.style.transform = `translate(-${cardWidth / 2}px, -${
+              cardHeight / 2
+            }px)`;
+          } else {
+            card.style.transform = `translate(-${cardWidth / 2}px, -${
+              cardHeight / 2
+            }px) rotate(90deg)`;
+          }
+          playground.appendChild(card);
+        }
+      }
+
+      function playCard(value1, value2) {
+        const width = 900;
+        const height = 400;
+
+        if (playgroundCards.length === 0) {
+          playgroundCards.push([value1, value2, width / 2, height / 2]);
+
+          leftCard = playgroundCards.lastElementChild;
+          rightCard = playgroundCards.lastElementChild;
+        } else {
+         // playgroundCards.push([value1, value2, width / 2, height / 2]);
+        }
+      }
+
+      function togglePlayer() {
+        turnToPlay = turnToPlay === player1 ? player2 : player1;
+      }
+
+      // Section
+      // Create Domino Cards
 
       function createDominoCard(value1, value2, show, vertical = true) {
         let card = document.createElement("div");
@@ -370,118 +527,13 @@
         return el;
       }
 
-      function start() {
-        const button = document.querySelector("button");
-        button.style.display = "none";
-
-        fillPlayerCards();
-      }
-
-      function fillPlayerCards() {
-        for (let i = 0; i < 7; i++) {
-          let [a, b] = dominoList.pop();
-          player1Cards.push([a, b]);
-        }
-
-        for (let i = 0; i < 7; i++) {
-          let [a, b] = dominoList.pop();
-          player2Cards.push([a, b]);
-        }
-
-        display();
-      }
-
-      function display() {
-        // Unused cards config
-
-        const unusedCardsSide = document.querySelector(".unused-cards-side");
-        removeChildren(unusedCardsSide);
-
-        for (let i = 0; i < dominoList.length; i++) {
-          const [a, b] = dominoList[i];
-          const card = createDominoCard(a, b, false, true);
-          unusedCardsSide.appendChild(card);
-
-          card.onclick = (event) => {
-            dominoList.splice(i, 1);
-            if (turnToPlay === player1) {
-              player1Cards.push([a, b]);
-            } else {
-              player2Cards.push([a, b]);
-            }
-
-            display();
-          };
-        }
-
-        // Current player config
-        const currentPlayerSide = document.querySelector(
-          ".current-player-side"
-        );
-
-        currentPlayerSide.style.border =
-          turnToPlay === player1 ? "1px solid black" : "";
-
-        removeChildren(currentPlayerSide);
-
-        for (let i = 0; i < player1Cards.length; i++) {
-          const [a, b] = player1Cards[i];
-          const card = createDominoCard(a, b, true);
-          currentPlayerSide.appendChild(card);
-
-          card.onclick = (event) => {
-            if (turnToPlay === player1) {
-              playCard(a, b);
-              player1Cards.splice(i, 1);
-
-              togglePlayer();
-              display();
-            }
-          };
-        }
-
-        // Opposite player config
-        const oppositePlayerSide = document.querySelector(
-          ".opposite-player-side"
-        );
-
-        oppositePlayerSide.style.border =
-          turnToPlay === player2 ? "1px solid black" : "";
-
-        removeChildren(oppositePlayerSide);
-
-        for (let i = 0; i < player2Cards.length; i++) {
-          const [a, b] = player2Cards[i];
-          const card = createDominoCard(a, b, true);
-          oppositePlayerSide.appendChild(card);
-
-          card.onclick = (event) => {
-            if (turnToPlay === player2) {
-              playCard(a, b);
-              player2Cards.splice(i, 1);
-
-              togglePlayer();
-
-              display();
-            }
-          };
-        }
-      }
+      // Section
+      // HELPERS
 
       function removeChildren(htmlElement) {
         while (htmlElement.lastElementChild) {
           htmlElement.removeChild(htmlElement.lastElementChild);
         }
-      }
-
-      function playCard(value1, value2) {
-        const playground = document.querySelector(".playground");
-        const card = createDominoCard(value1, value2, true);
-        playground.appendChild(card);
-      }
-
-      function togglePlayer() {
-        turnToPlay = turnToPlay === player1 ? player2 : player1;
       }
 
       //Fisher–Yates Shuffle Implementation

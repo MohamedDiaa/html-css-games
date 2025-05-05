@@ -255,11 +255,20 @@
 
           card.onclick = (event) => {
             if (turnToPlay === player1) {
-              playCard(a, b);
-              player1Cards.splice(i, 1);
-
-              togglePlayer();
-              display();
+              const result = playCard(a, b);
+              console.log(
+                "playgroundCards",
+                playgroundCards,
+                "leftcard",
+                leftCard,
+                "rightCard",
+                rightCard
+              );
+              if (result) {
+                player1Cards.splice(i, 1);
+                togglePlayer();
+                display();
+              }
             }
           };
         }
@@ -279,12 +288,20 @@
 
           card.onclick = (event) => {
             if (turnToPlay === player2) {
-              playCard(a, b);
-              player2Cards.splice(i, 1);
-
-              togglePlayer();
-
-              display();
+              const result = playCard(a, b);
+              console.log(
+                "playgroundCards",
+                playgroundCards,
+                "leftcard",
+                leftCard,
+                "rightCard",
+                rightCard
+              );
+              if (result) {
+                player2Cards.splice(i, 1);
+                togglePlayer();
+                display();
+              }
             }
           };
         }
@@ -294,8 +311,8 @@
         // ===========================================
 
         for (let i = 0; i < playgroundCards.length; i++) {
-          const [a, b, x, y] = playgroundCards[i];
-          console.log("pvdhwoiuherowhoifu", a,b,x,y);
+          const [a, b, v, x, y] = playgroundCards[i];
+          // console.log("pvdhwoiuherowhoifu", a, b,v,x, y);
           const card = createDominoCard(a, b, true);
           card.style.position = "absolute";
           card.style.left = `${x}px`;
@@ -319,13 +336,66 @@
         const height = 400;
 
         if (playgroundCards.length === 0) {
-          playgroundCards.push([value1, value2, width / 2, height / 2]);
+          if (value1 != value2) {
+            return false;
+          }
 
-          leftCard = playgroundCards.lastElementChild;
-          rightCard = playgroundCards.lastElementChild;
+          playgroundCards.push([value1, value2, value1, width / 2, height / 2]);
+
+          leftCard = playgroundCards[0];
+          rightCard = playgroundCards[0];
+          return true;
         } else {
-         // playgroundCards.push([value1, value2, width / 2, height / 2]);
+          const [a1, b1, lastValue1, x1, y1] = rightCard;
+
+          if (lastValue1 === value1 || lastValue1 === value2) {
+            if (lastValue1 === value1) {
+              playgroundCards.push([
+                value2,
+                value1,
+                value2,
+                x1 + cardWidth + 44,
+                y1,
+              ]);
+            } else {
+              playgroundCards.push([
+                value1,
+                value2,
+                value1,
+                x1 + cardWidth + 44,
+                y1,
+              ]);
+            }
+            rightCard = playgroundCards[playgroundCards.length - 1];
+            return true;
+          }
+
+          const [a2, b2, lastValue2, x2, y2] = leftCard;
+          if (lastValue2 === value1 || lastValue2 === value2) {
+            if (lastValue2 === value1) {
+              playgroundCards.push([
+                value1,
+                value2,
+                value2,
+                x2 - cardWidth - 44,
+                y2,
+              ]);
+            } else {
+              playgroundCards.push([
+                value2,
+                value1,
+                value1,
+                x2 - cardWidth - 44,
+                y2,
+              ]);
+            }
+
+            leftCard = playgroundCards[playgroundCards.length - 1];
+            return true;
+          }
         }
+
+        return false;
       }
 
       function togglePlayer() {

@@ -329,6 +329,15 @@
           }
           playground.appendChild(card);
         }
+
+        // ===========================================
+        // check Game finished
+        // ===========================================
+        if (player1Cards.length === 0) {
+          alert("Current Player won");
+        } else if (player2Cards.length === 0) {
+          alert("opposite Player won");
+        }
       }
 
       function playCard(value1, value2) {

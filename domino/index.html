@@ -309,6 +309,7 @@
         // ===========================================
         // Playground
         // ===========================================
+        removeChildren(playground);
 
         for (let i = 0; i < playgroundCards.length; i++) {
           const [a, b, v, x, y] = playgroundCards[i];
@@ -333,10 +334,12 @@
         // ===========================================
         // check Game finished
         // ===========================================
-        if (player1Cards.length === 0) {
+        if(playgroundCards.length > 0){
+          if (player1Cards.length === 0) {
           alert("Current Player won");
         } else if (player2Cards.length === 0) {
           alert("opposite Player won");
+        }
         }
       }
 

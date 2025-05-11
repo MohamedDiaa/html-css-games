@@ -172,10 +172,35 @@
 
         const row = event.target.row;
         const coloumn = event.target.coloumn;
-        if(row === currentRow) {
+        if (row === currentRow) {
           data[row][coloumn] = element.style.backgroundColor;
         }
+        validateRow(row);
         refresh();
+      }
+
+      function validateRow(row) {
+        const array = data[row];
+        for (let i = 0; i < array.length; i++) {
+          if (array[i] === "white") {
+            return;
+          }
+        }
+        
+        // increment current row
+          currentRow += 1;
+
+        //
+        let solutionCopy = [];
+        solution.forEach((el) => { solutionCopy.push(el)});
+        let feedback = [];
+
+        for(let i = 0; i < array.length; i++) {
+          if(solutionCopy[i] === array[i]) {
+            feedback.push("white");
+          }
+        } 
+
       }
 
       //Fisher–Yates Shuffle Implementation

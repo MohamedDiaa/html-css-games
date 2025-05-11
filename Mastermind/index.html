@@ -32,8 +32,8 @@
 
       .code-peg-holder {
         position: fixed;
-        left: 0;
-        top: 100;
+        left: 20px;
+        top: 60px;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
@@ -43,6 +43,7 @@
         height: 60px;
         width: 60px;
         border-radius: 50%;
+        border: 1px solid rgb(82, 79, 79);
       }
     </style>
   </head>
@@ -58,9 +59,25 @@
     <div class="game-board"></div>
 
     <script>
-      let codePegColors = ["red", "green", "blue", "black", "pink", "yellow","orange","purple"];
-
+      let codePegColors = [
+        "red",
+        "green",
+        "blue",
+        "black",
+        "pink",
+        "yellow",
+        "orange",
+        "purple",
+      ];
       let slotsCount = 5;
+      let rowsCount = 12;
+
+      let solution = [];
+
+      let data = new Array(rowsCount).fill(null).map(() => {
+        return new Array(slotsCount).fill("white");
+      });
+
       const gameBoard = document.querySelector(".game-board");
       const codePegHolder = document.querySelector(".code-peg-holder");
 
@@ -72,25 +89,26 @@
       function setup() {
         gameBoard.style.gridTemplateColumns = `repeat(${slotsCount * 2}, auto)`;
 
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < rowsCount; i++) {
           for (let j = 0; j < slotsCount; j++) {
             let div = document.createElement("div");
             div.style.width = "50px";
             div.style.height = "50px";
             div.style.borderRadius = "50%";
             div.style.border = "5px solid black";
-            div.style.background = "white";
+            div.id = `id-${i}-${j}`;
+            div.row = i;
+            div.coloumn = j;
+            div.style.background = data[i][j];
             div.ondrop = dropHandler;
             div.ondragover = dragOverHandler;
             gameBoard.appendChild(div);
           }
           for (let j = 0; j < slotsCount; j++) {
             let div2 = document.createElement("div");
-            div2.style.width = "10px";
-            div2.style.height = "10px";
-            div2.style.borderRadius = "50%";
-            div2.style.border = "2px solid black";
-            div2.style.background = "white";
+            div2.style.width = "20px";
+            div2.style.height = "20px";
+            div2.style.border = "1px solid black";
             gameBoard.appendChild(div2);
           }
         }
@@ -106,6 +124,16 @@
         }
       }
 
+      function refresh() {
+        for (let i = 0; i < rowsCount; i++) {
+          for (let j = 0; j < slotsCount; j++) {
+            const id = `id-${i}-${j}`;
+            const el = document.getElementById(id);
+            el.style.backgroundColor = data[i][j];
+          }
+        }
+      }
+
       function dragStartHandler(event) {
         event.dataTransfer.setData("text", event.target.id);
       }
@@ -116,10 +144,13 @@
       function dropHandler(event) {
         event.preventDefault();
 
-        const data = event.dataTransfer.getData("text");
-        const element = document.getElementById(data);
-        console.log("drop element", element);
-        event.target.style.backgroundColor = element.style.backgroundColor;
+        const text = event.dataTransfer.getData("text");
+        const element = document.getElementById(text);
+
+        const row = event.target.row;
+        const coloumn = event.target.coloumn;
+        data[row][coloumn] = element.style.backgroundColor;
+        refresh();
       }
     </script>
   </body>

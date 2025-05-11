@@ -45,6 +45,24 @@
         border-radius: 50%;
         border: 1px solid rgb(82, 79, 79);
       }
+      .solution {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        margin: 10px 0px;
+      }
+      .solution-button {
+        margin-top: 40px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: aqua;
+      }
+      footer {
+        text-align: center;
+        margin: 30px;
+        font-size: 30px;
+      }
     </style>
   </head>
   <body>
@@ -54,10 +72,19 @@
         href="https://en.wikipedia.org/wiki/Mastermind_%28board_game%29?utm_source=chatgpt.com"
         >How to Play</a
       >
+      <br />
+      <button class="solution-button" onclick="showSolutionAction()">
+        Reveal Solution
+      </button>
     </header>
+    <div class="solution"></div>
     <div class="code-peg-holder"></div>
     <div class="game-board"></div>
-
+    <footer>
+      Designed by M. Alwakil 2025.
+      <br />
+      <a href="https://github.com/MohamedDiaa">Github</a>
+    </footer>
     <script>
       const codePegColors = [
         "red",
@@ -75,6 +102,7 @@
 
       let solution = [];
       let currentRow = 0;
+      let isSolutionRevealed = false;
 
       let data = new Array(rowsCount).fill(null).map(() => {
         return new Array(slotsCount).fill("white");
@@ -86,9 +114,10 @@
 
       const gameBoard = document.querySelector(".game-board");
       const codePegHolder = document.querySelector(".code-peg-holder");
+      const solutionView = document.querySelector(".solution");
+      const solutionButton = document.querySelector(".solution-button");
 
       setup();
-
       //============
       //============
 
@@ -157,7 +186,9 @@
       }
 
       function dragStartHandler(event) {
-        event.dataTransfer.setData("text", event.target.id);
+        if (!isSolutionRevealed) {
+          event.dataTransfer.setData("text", event.target.id);
+        }
       }
 
       function dragOverHandler(event) {
@@ -186,21 +217,88 @@
             return;
           }
         }
-        
+
         // increment current row
-          currentRow += 1;
+        currentRow += 1;
 
-        //
+        //copy arrays
         let solutionCopy = [];
-        solution.forEach((el) => { solutionCopy.push(el)});
-        let feedback = [];
+        solution.forEach((el) => {
+          solutionCopy.push(el);
+        });
 
-        for(let i = 0; i < array.length; i++) {
-          if(solutionCopy[i] === array[i]) {
-            feedback.push("white");
+        let rowCopy = [];
+        array.forEach((el) => {
+          rowCopy.push(el);
+        });
+
+        let rowFeedback = [];
+
+        for (let i = 0; i < rowCopy.length; i++) {
+          if (solutionCopy[i] === array[i]) {
+            rowFeedback.push("white");
+            solutionCopy[i] = "done";
+            rowCopy[i] = "done";
           }
-        } 
+        }
 
+        for (let i = 0; i < rowCopy.length; i++) {
+          for (let j = 0; j < solutionCopy.length; j++) {
+            if (solutionCopy[j] === "done" || rowCopy[i] === "done") {
+              continue;
+            }
+            if (rowCopy[i] === solutionCopy[j]) {
+              rowFeedback.push("black");
+              rowCopy[i] = "done";
+              solutionCopy[j] = "done";
+            }
+          }
+        }
+
+        feedback[row] = rowFeedback;
+
+        //========================
+        // check if game won or lost.
+        //========================
+        let win = false;
+        if (rowFeedback.length === slotsCount) {
+          win = true;
+          for (let i = 0; i < rowFeedback.length; i++) {
+            if (rowFeedback[i] != "white") {
+              win = false;
+            }
+          }
+        }
+
+        if (win) {
+          alert("You made it!, you Woooooooon.");
+          showSolution();
+        }
+
+        // check if all is tried and game is over.
+        if (!win && currentRow === rowsCount) {
+          alert("You lose, Hard luck,try again!.");
+          showSolution();
+        }
+      }
+
+      function showSolutionAction() {
+        const result = confirm("are you sure you want to show the answer");
+        if (result) {
+          showSolution();
+        }
+      }
+
+      function showSolution() {
+        isSolutionRevealed = true;
+        solutionButton.style.display = "none";
+
+        for (let i = 0; i < solution.length; i++) {
+          const el = document.createElement("div");
+          el.classList.add("code-peg");
+          el.style.backgroundColor = solution[i];
+          solutionView.appendChild(el);
+        }
       }
 
       //Fisher–Yates Shuffle Implementation

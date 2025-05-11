@@ -59,7 +59,7 @@
     <div class="game-board"></div>
 
     <script>
-      let codePegColors = [
+      const codePegColors = [
         "red",
         "green",
         "blue",
@@ -69,13 +69,19 @@
         "orange",
         "purple",
       ];
-      let slotsCount = 5;
-      let rowsCount = 12;
+
+      const slotsCount = 5;
+      const rowsCount = 12;
 
       let solution = [];
+      let currentRow = 0;
 
       let data = new Array(rowsCount).fill(null).map(() => {
         return new Array(slotsCount).fill("white");
+      });
+
+      let feedback = new Array(rowsCount).fill(null).map(() => {
+        return new Array(slotsCount).fill("clear");
       });
 
       const gameBoard = document.querySelector(".game-board");
@@ -87,6 +93,15 @@
       //============
 
       function setup() {
+        //=========
+        // setup solution array
+        //========
+        for (let i = 0; i < slotsCount; i++) {
+          const j = Math.floor(Math.random() * codePegColors.length);
+          solution.push(codePegColors[j]);
+        }
+        //console.log(solution);
+
         gameBoard.style.gridTemplateColumns = `repeat(${slotsCount * 2}, auto)`;
 
         for (let i = 0; i < rowsCount; i++) {
@@ -109,6 +124,9 @@
             div2.style.width = "20px";
             div2.style.height = "20px";
             div2.style.border = "1px solid black";
+            div2.id = `feedback-id-${i}-${j}`;
+            div2.row = i;
+            div2.coloumn = j;
             gameBoard.appendChild(div2);
           }
         }
@@ -130,6 +148,10 @@
             const id = `id-${i}-${j}`;
             const el = document.getElementById(id);
             el.style.backgroundColor = data[i][j];
+
+            const id2 = `feedback-id-${i}-${j}`;
+            const el2 = document.getElementById(id2);
+            el2.style.backgroundColor = feedback[i][j];
           }
         }
       }
@@ -141,6 +163,7 @@
       function dragOverHandler(event) {
         event.preventDefault();
       }
+
       function dropHandler(event) {
         event.preventDefault();
 
@@ -149,8 +172,21 @@
 
         const row = event.target.row;
         const coloumn = event.target.coloumn;
-        data[row][coloumn] = element.style.backgroundColor;
+        if(row === currentRow) {
+          data[row][coloumn] = element.style.backgroundColor;
+        }
         refresh();
+      }
+
+      //Fisher–Yates Shuffle Implementation
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          // Generate a random index from 0 to i
+          const j = Math.floor(Math.random() * (i + 1));
+          // Swap elements at indices i and j
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
       }
     </script>
   </body>

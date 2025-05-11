@@ -22,13 +22,8 @@
         gap: 40px;
         margin-bottom: 10px;
         background-color: rgb(178, 220, 213);
-      }
-      .result-board {
-        display: grid;
-        grid-template-columns: repeat(4, auto);
-        gap: 40px;
-        background-color: rgb(178, 220, 213);
-
+        align-items: center;
+        padding: 10px;
       }
       .code-peg {
         height: 30px;
@@ -47,7 +42,6 @@
     <div class="code-peg-holder"></div>
     
     <div class="game-board"></div>
-    <!-- <div class="result-board"></div> -->
 
   <script>
       let codePegColors = ["red","green", "blue","black" , "pink" , "white"];
@@ -58,7 +52,8 @@
       const resultBoard = document.querySelector(".result-board");
 
 
-      gameBoard.style.gridTemplateColumns = `repeat(${slotsCount}, auto)`;
+      gameBoard.style.gridTemplateColumns = `repeat(${slotsCount * 2 }, auto)`;
+  
       for (let i = 0; i < 12; i++) {
         for (let j = 0; j < slotsCount; j++) {
 
@@ -70,7 +65,8 @@
           div.style.background = "white";
           gameBoard.appendChild(div);
         
-        
+        }
+        for (let j = 0; j < slotsCount; j++) {
           let div2 = document.createElement("div");
           div2.style.width = "10px";
           div2.style.height = "10px";
@@ -79,6 +75,7 @@
           div2 .style.background = "white";
           gameBoard.appendChild(div2);
         }
+      
       }
 
       for(let i = 0 ; i < codePegColors.length; i++) {

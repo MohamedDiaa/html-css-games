@@ -12,13 +12,12 @@
       }
       body {
         background-color: antiquewhite;
-    
       }
       header {
         text-align: center;
         padding: 10px;
       }
-  
+
       .game-board {
         display: grid;
         grid-template-columns: repeat(4, auto);
@@ -30,7 +29,7 @@
         border-radius: 5px;
         margin: 0 200px;
       }
-    
+
       .code-peg-holder {
         position: fixed;
         left: 0;
@@ -41,64 +40,87 @@
         gap: 10px;
       }
       .code-peg {
-        height: 100px;
-        width: 100px;
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
       }
     </style>
   </head>
   <body>
-
     <header>
       <h1>MasterMind</h1>
-      <a href="https://en.wikipedia.org/wiki/Mastermind_%28board_game%29?utm_source=chatgpt.com">How to Play</a>
-   
+      <a
+        href="https://en.wikipedia.org/wiki/Mastermind_%28board_game%29?utm_source=chatgpt.com"
+        >How to Play</a
+      >
     </header>
-    <div class="code-peg-holder"></div>    
+    <div class="code-peg-holder"></div>
     <div class="game-board"></div>
 
-  <script>
-      let codePegColors = ["red","green", "blue","black" , "pink" , "white"];
+    <script>
+      let codePegColors = ["red", "green", "blue", "black", "pink", "white"];
 
-      let slotsCount = 5; 
+      let slotsCount = 5;
       const gameBoard = document.querySelector(".game-board");
       const codePegHolder = document.querySelector(".code-peg-holder");
-      const resultBoard = document.querySelector(".result-board");
 
+      setup();
 
-      gameBoard.style.gridTemplateColumns = `repeat(${slotsCount * 2 }, auto)`;
-  
-      for (let i = 0; i < 12; i++) {
-        for (let j = 0; j < slotsCount; j++) {
+      //============
+      //============
 
-          let div = document.createElement("div");
-          div.style.width = "50px";
-          div.style.height = "50px";
-          div.style.borderRadius = "50%";
-          div.style.border = "5px solid black";
-          div.style.background = "white";
-          gameBoard.appendChild(div);
-        
+      function setup() {
+        gameBoard.style.gridTemplateColumns = `repeat(${slotsCount * 2}, auto)`;
+
+        for (let i = 0; i < 12; i++) {
+          for (let j = 0; j < slotsCount; j++) {
+            let div = document.createElement("div");
+            div.style.width = "50px";
+            div.style.height = "50px";
+            div.style.borderRadius = "50%";
+            div.style.border = "5px solid black";
+            div.style.background = "white";
+            div.ondrop = dropHandler;
+            div.ondragover = dragOverHandler;
+            gameBoard.appendChild(div);
+          }
+          for (let j = 0; j < slotsCount; j++) {
+            let div2 = document.createElement("div");
+            div2.style.width = "10px";
+            div2.style.height = "10px";
+            div2.style.borderRadius = "50%";
+            div2.style.border = "2px solid black";
+            div2.style.background = "white";
+            gameBoard.appendChild(div2);
+          }
         }
-        for (let j = 0; j < slotsCount; j++) {
-          let div2 = document.createElement("div");
-          div2.style.width = "10px";
-          div2.style.height = "10px";
-          div2.style.borderRadius = "50%";
-          div2.style.border = "2px solid black";
-          div2 .style.background = "white";
-          gameBoard.appendChild(div2);
+
+        for (let i = 0; i < codePegColors.length; i++) {
+          const el = document.createElement("div");
+          el.id = codePegColors[i];
+          el.classList.add("code-peg");
+          el.style.backgroundColor = codePegColors[i];
+          el.draggable = true;
+          el.ondragstart = dragStartHandler;
+          codePegHolder.appendChild(el);
         }
-      
       }
 
-      for(let i = 0 ; i < codePegColors.length; i++) {
-       
-        const el = document.createElement("div");
-        el.classList.add("code-peg");
-        el.style.backgroundColor= codePegColors[i];
-        codePegHolder.appendChild(el); 
+      function dragStartHandler(event) {
+        event.dataTransfer.setData("text", event.target.id);
       }
 
+      function dragOverHandler(event) {
+        event.preventDefault();
+      }
+      function dropHandler(event) {
+        event.preventDefault();
+
+        const data = event.dataTransfer.getData("text");
+        const element = document.getElementById(data);
+        console.log("drop element", element);
+        event.target.style.backgroundColor = element.style.backgroundColor;
+      }
     </script>
   </body>
 </html>

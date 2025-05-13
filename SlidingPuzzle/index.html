@@ -94,11 +94,18 @@
             pieceView.classList.add("piece");
             const num = storage[j][i];
 
+            pieceView.id = `piece-${num}`;
+            pieceView.row = j;
+            pieceView.column = i;
+
             if (num == sideCount * sideCount) {
               pieceView.style.backgroundColor = "white";
+              pieceView.ondrop = dropHandler;
+              pieceView.ondragover = dragOverHandler;
             } else {
               pieceView.innerText = `${num}`;
               pieceView.draggable = true;
+              pieceView.ondrag = dragStartHandler;
 
               if (j % 2 == 0) {
                 pieceView.style.backgroundColor = i % 2 ? "red" : "green";
@@ -109,6 +116,27 @@
             boardView.appendChild(pieceView);
           }
         }
+      }
+
+      function dragStartHandler(event) {
+        console.log("heere", event.target.id);
+        event.dataTransfer.setData("piece-id", event.target.id);
+      }
+
+      function dragOverHandler(event) {
+        event.preventDefault();
+      }
+
+      function dropHandler(event) {
+        event.preventDefault();
+
+        const pieceId = event.dataTransfer.getData("piece-id");
+        console.log("id", pieceId);
+        // const piece = document.getElementById(id);
+        // const row = piece.row;
+        // const coloumn = piece.column;
+
+        // console.log("row", row, "column", coloumn);
       }
     </script>
   </body>

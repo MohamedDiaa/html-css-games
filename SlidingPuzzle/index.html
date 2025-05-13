@@ -71,6 +71,7 @@
 
       let storage = [];
       let emptySquare = null;
+      let colors = [];
 
       setup();
       display();
@@ -80,12 +81,14 @@
       //=======================
 
       function setup() {
+        colors = setupColors();
+
         storage = new Array(4).fill(null).map(() => {
           return new Array(4).fill(null);
         });
 
         let array = createArray();
-
+        shuffleArray(array);
         for (let j = 0; j < sideCount; j++) {
           for (let i = 0; i < sideCount; i++) {
             {
@@ -120,11 +123,7 @@
               pieceView.draggable = true;
               pieceView.ondragstart = dragStartHandler;
 
-              if (j % 2 == 0) {
-                pieceView.style.backgroundColor = i % 2 ? "red" : "green";
-              } else {
-                pieceView.style.backgroundColor = i % 2 ? "green" : "red";
-              }
+              pieceView.style.backgroundColor = colors[num - 1];
             }
             boardView.appendChild(pieceView);
           }
@@ -172,10 +171,26 @@
         for (let i = 1; i <= sideCount * sideCount; i++) {
           array.push(i);
         }
-        shuffleArray(array);
+        
         return array;
       }
 
+      function setupColors() {
+        let array = createArray();
+        let colors = [];
+        let startColor = "green";
+        let currentColor = "red";
+        for (let i = 0; i < array.length; i++) {
+          if (i % 4 === 0) {
+            startColor = startColor === "red" ? "green" : "red";
+            currentColor = startColor;
+          }
+
+          colors.push(currentColor);
+          currentColor = currentColor === "red" ? "green" : "red";
+        }
+        return colors;
+      }
       //Fisher–Yates Shuffle Implementation
       function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {

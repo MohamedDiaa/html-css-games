@@ -48,8 +48,8 @@
   </head>
   <body>
     <header>
-        <h1>Sliding Puzzle</h1>
-        <a href="https://en.wikipedia.org/wiki/Sliding_puzzle">How to play?</a>
+      <h1>Sliding Puzzle</h1>
+      <a href="https://en.wikipedia.org/wiki/Sliding_puzzle">How to play?</a>
     </header>
     <div class="wrapper">
       <div class="sliding-board"></div>
@@ -59,36 +59,55 @@
       const boardView = document.querySelector(".sliding-board");
       const sideCount = 4;
 
-      let storage = new Array(4).fill(null).map(() => {
-        return new Array(4);
-      });
+      let storage = [];
+      let emptySquare = null;
+
+      setup();
+      display();
+
+      //=======================
+      // functions
+      //=======================
 
       function setup() {
+        storage = new Array(4).fill(null).map(() => {
+          return new Array(4).fill(null);
+        });
+
         for (let j = 0; j < sideCount; j++) {
           for (let i = 0; i < sideCount; i++) {
             {
+              const num = j * 4 + i + 1;
+              storage[j][i] = num;
+              if (num === sideCount * sideCount) {
+                emptySquare = [j, i];
+              }
             }
           }
         }
       }
 
-      for (let j = 0; j < sideCount; j++) {
-        for (let i = 0; i < sideCount; i++) {
-          const pieceView = document.createElement("div");
-          pieceView.classList.add("piece");
-          const num = j * 4 + i + 1;
+      function display() {
+        for (let j = 0; j < sideCount; j++) {
+          for (let i = 0; i < sideCount; i++) {
+            const pieceView = document.createElement("div");
+            pieceView.classList.add("piece");
+            const num = storage[j][i];
 
-          if (num == sideCount * sideCount) {
-            pieceView.style.backgroundColor = "white";
-          } else {
-            pieceView.innerText = `${num}`;
-            if (j % 2 == 0) {
-              pieceView.style.backgroundColor = i % 2 ? "red" : "green";
+            if (num == sideCount * sideCount) {
+              pieceView.style.backgroundColor = "white";
             } else {
-              pieceView.style.backgroundColor = i % 2 ? "green" : "red";
+              pieceView.innerText = `${num}`;
+              pieceView.draggable = true;
+
+              if (j % 2 == 0) {
+                pieceView.style.backgroundColor = i % 2 ? "red" : "green";
+              } else {
+                pieceView.style.backgroundColor = i % 2 ? "green" : "red";
+              }
             }
+            boardView.appendChild(pieceView);
           }
-          boardView.appendChild(pieceView);
         }
       }
     </script>

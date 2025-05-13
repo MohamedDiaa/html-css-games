@@ -156,7 +156,10 @@
             storage[emptyRow][emptyColumn],
             storage[row][column],
           ];
+
           display();
+          checkGameWon();
+
         }
       }
 
@@ -171,7 +174,7 @@
         for (let i = 1; i <= sideCount * sideCount; i++) {
           array.push(i);
         }
-        
+
         return array;
       }
 
@@ -191,6 +194,22 @@
         }
         return colors;
       }
+
+      function checkGameWon() {
+        let gameWon = true;
+        for (let i = 0; i < sideCount; i++) {
+          for (let j = 0; j < sideCount; j++) {
+            if (storage[i][j] != i * 4 + j + 1) {
+              gameWon = false;
+              break;
+            }
+          }
+        }
+        if(gameWon) {
+          alert("Youuuu won!, Congratulations for the great work!");
+        }
+      }
+
       //Fisher–Yates Shuffle Implementation
       function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {

@@ -36,6 +36,7 @@
         border: 1px solid black;
         text-align: center;
         align-content: center;
+        align-items: center;
         color: gold;
         font-size: 40px;
       }
@@ -88,7 +89,11 @@
         });
 
         let array = createArray();
-        shuffleArray(array);
+
+        do {
+          shuffleArray(array);
+        } while (!isSolvable(array));
+
         for (let j = 0; j < sideCount; j++) {
           for (let i = 0; i < sideCount; i++) {
             {
@@ -159,7 +164,6 @@
 
           display();
           checkGameWon();
-
         }
       }
 
@@ -205,8 +209,27 @@
             }
           }
         }
-        if(gameWon) {
+        if (gameWon) {
           alert("Youuuu won!, Congratulations for the great work!");
+        }
+      }
+
+      function isSolvable(array) {
+        let invCount = 0;
+        for (let i = 0; i < array.length - 1; i++) {
+          for (let j = i + 1; j < array.length; j++) {
+            if (array[i] !== 16 && array[j] !== 16 && array[i] > array[j]) {
+              invCount++;
+            }
+          }
+        }
+        const emptyRowFromBottom = 4 - Math.floor(array.indexOf(16) / 4);
+        if (4 % 2 === 0) {
+          return emptyRowFromBottom % 2 === 0
+            ? invCount % 2 === 1
+            : invCount % 2 === 0;
+        } else {
+          return invCount % 2 === 0;
         }
       }
 

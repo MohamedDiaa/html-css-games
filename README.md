@@ -3,4 +3,4 @@ Project is meant to be a fun playground to implement few games in HTML, CSS and 
 
 [Play](https://html-css-games.vercel.app/)
 
-![Screenshot 2025-05-06 at 14 38 56](https://github.com/user-attachments/assets/2c5b46fc-8f32-433e-b8f4-515904d79e6d)
+![Screenshot 2025-05-14 at 03 08 06](https://github.com/user-attachments/assets/3ce09b8f-129b-49d5-b0ea-da4edbddc8d1)

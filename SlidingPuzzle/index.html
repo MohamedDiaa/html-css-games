@@ -52,7 +52,7 @@
       .audio-btn {
         font-size: 40px;
         border: 0px;
-        background-color:antiquewhite;
+        background-color: antiquewhite;
       }
       footer {
         text-align: center;
@@ -65,9 +65,10 @@
     <header>
       <h1>Sliding Puzzle</h1>
       <a href="https://en.wikipedia.org/wiki/Sliding_puzzle">How to play?</a>
-      
+
       <button class="audio-btn" onclick="toggleAudio()">🔈</button>
       <h3 class="move-count">Move Count: 0</h3>
+      <h6 class="time-passed"></h6>
     </header>
     <div class="wrapper">
       <div class="sliding-board"></div>
@@ -81,6 +82,7 @@
       const boardView = document.querySelector(".sliding-board");
       const audioButton = document.querySelector(".audio-btn");
       const moveCountView = document.querySelector(".move-count");
+      const timePassedView = document.querySelector(".time-passed");
 
       const audio = new Audio("/assets/swipe-audio.mp3");
       const sideCount = 4;
@@ -89,7 +91,9 @@
       let emptySquare = null;
       let colors = [];
       let audioEnabled = true;
-      let moveCount = 0
+      let moveCount = 0;
+      let startDate = null;
+      let endDate = null;
 
       setup();
       display();
@@ -150,8 +154,13 @@
             boardView.appendChild(pieceView);
           }
         }
-        
+
         moveCountView.innerText = `Move Count: ${moveCount}`;
+
+        if (startDate && endDate) {
+          let time = getRelativeTime(startDate, endDate);
+          timePassedView.innerText = `Finished ${time}`;
+        }
       }
 
       function dragStartHandler(event) {
@@ -181,13 +190,17 @@
             storage[row][column],
           ];
 
-          if(audioEnabled) {
+          if (audioEnabled) {
             audio.play();
           }
           moveCount += 1;
 
-          display();
+          if (moveCount === 1) {
+            startDate = new Date();
+          }
+
           checkGameWon();
+          display();
         }
       }
 
@@ -234,6 +247,7 @@
           }
         }
         if (gameWon) {
+          endDate = new Date();
           alert("Youuuu won!, Congratulations for the great work!");
         }
       }
@@ -258,10 +272,10 @@
       }
 
       function toggleAudio() {
-        console.log("audio enable")
+        console.log("audio enable");
         audioEnabled = !audioEnabled;
 
-        audioButton.innerText = audioEnabled ? "🔈" : "🔇"
+        audioButton.innerText = audioEnabled ? "🔈" : "🔇";
       }
       //Fisher–Yates Shuffle Implementation
       function shuffleArray(array) {
@@ -273,6 +287,33 @@
         }
         return array;
       }
+
+      function getRelativeTime(fromDate, toDate = new Date()) {
+        const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+        const diffInSeconds = Math.floor((toDate - fromDate) / 1000);
+
+        const divisions = [
+          { amount: 60, unit: "seconds" },
+          { amount: 60, unit: "minutes" },
+          { amount: 24, unit: "hours" },
+          { amount: 7, unit: "days" },
+          { amount: 4.34524, unit: "weeks" },
+          { amount: 12, unit: "months" },
+          { amount: Number.POSITIVE_INFINITY, unit: "years" },
+        ];
+
+        let duration = diffInSeconds;
+        for (let i = 0; i < divisions.length; i++) {
+          if (Math.abs(duration) < divisions[i].amount) {
+            return rtf.format(Math.round(duration), divisions[i].unit);
+          }
+          duration /= divisions[i].amount;
+        }
+      }
+
+      // Example usage:
+      const pastDate = new Date("2022-05-15");
+      console.log(getRelativeTime(pastDate)); // Output: "3 years ago" (as of 2025-05-15)
     </script>
   </body>
 </html>

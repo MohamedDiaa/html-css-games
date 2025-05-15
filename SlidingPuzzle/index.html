@@ -67,6 +67,7 @@
       <a href="https://en.wikipedia.org/wiki/Sliding_puzzle">How to play?</a>
       
       <button class="audio-btn" onclick="toggleAudio()">🔈</button>
+      <h3 class="move-count">Move Count: 0</h3>
     </header>
     <div class="wrapper">
       <div class="sliding-board"></div>
@@ -79,6 +80,7 @@
     <script>
       const boardView = document.querySelector(".sliding-board");
       const audioButton = document.querySelector(".audio-btn");
+      const moveCountView = document.querySelector(".move-count");
 
       const audio = new Audio("/assets/swipe-audio.mp3");
       const sideCount = 4;
@@ -87,6 +89,7 @@
       let emptySquare = null;
       let colors = [];
       let audioEnabled = true;
+      let moveCount = 0
 
       setup();
       display();
@@ -147,6 +150,8 @@
             boardView.appendChild(pieceView);
           }
         }
+        
+        moveCountView.innerText = `Move Count: ${moveCount}`;
       }
 
       function dragStartHandler(event) {
@@ -179,6 +184,8 @@
           if(audioEnabled) {
             audio.play();
           }
+          moveCount += 1;
+
           display();
           checkGameWon();
         }

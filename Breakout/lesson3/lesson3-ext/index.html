@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bounce ball</title>
+    <style>
+      body {
+        background-color: antiquewhite;
+      }
+      #myCanvas {
+        background-color: white;
+        margin: 0 auto;
+        display: block;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="500" height="400"></canvas>
+
+    <script>
+      const canvas = document.getElementById("myCanvas");
+      const ctx = canvas.getContext("2d");
+      const ballRadius = 10;
+
+      let ballLocation = []; // [x, y ,color];
+
+      setInterval(draw, 10);
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (ballLocation.length < 10) {
+          let randomX = Math.floor(Math.random() * canvas.width - ballRadius) + ballRadius;
+          let randomY = Math.floor(Math.random() * canvas.height - ballRadius ) + ballRadius;
+          let randomdx = 2;
+          let randomdy = 2;
+          ballLocation.push([
+            randomX,
+            randomY,
+            randomdx,
+            randomdy,
+            getRandomHexColor(),
+          ]);
+        }
+
+        for (let i = 0; i < ballLocation.length; i++) {
+          let [x, y, dx, dy, color] = ballLocation[i];
+
+          if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+            dx = -dx;
+          }
+          if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+            dy = -dy;
+          }
+          x += dx;
+          y += dy;
+
+          ballLocation[i] = [x, y, dx, dy, color];
+          drawBall(x, y, color);
+        }
+
+        drawBall();
+      }
+      function drawBall(x, y, color) {
+        ctx.beginPath();
+        ctx.arc(x, y, ballRadius, 0, Math.PI * 2, false);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      function getRandomHexColor() {
+        return (
+          "#" +
+          Math.floor(Math.random() * 0xffffff)
+            .toString(16)
+            .padStart(6, 0)
+        );
+      }
+    </script>
+  </body>
+</html>

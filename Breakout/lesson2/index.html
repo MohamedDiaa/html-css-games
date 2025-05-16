@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Breakout</title>
+    <style>
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        body {
+            background-color: rgb(142, 182, 142);
+        }
+
+        canvas {
+            background: #eee;
+            display: block;
+            margin: 0 auto;
+        }
+        button {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <button id="runButton">Start game</button>
+    <script>
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+        let x = canvas.width / 2;
+        let y = canvas.height - 30;
+        let dx = 2;
+        let dy = -2;
+
+        function draw() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            drawBall();
+            x += dx;
+            y += dy;
+
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, 10, 0, Math.PI * 2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+        
+        function startGame() {
+            setInterval(draw, 10);
+        }
+        
+        document.getElementById("runButton").addEventListener("click", function () {
+            startGame();
+            this.disabled = true;
+        })
+
+    </script>
+</body>
+</html>

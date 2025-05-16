@@ -10,13 +10,16 @@
         margin: 0;
       }
       body {
-        background-color: rgb(142, 182, 142);
+        background-color:antiquewhite;
       }
 
       canvas {
         background: #eee;
         display: block;
         margin: 0 auto;
+        border: 1px solid rgb(62, 62, 62, 0.3);
+        border-radius: 10px;
+        margin-top: 40px;
       }
       button {
         display: block;
@@ -46,7 +49,6 @@
       let dx = 2;
       let dy = -2;
       let color = "#0095DD";
-      let interval = 0;
       let rightPressed = false;
       let leftPressed = false;
       let score = 0;
@@ -71,7 +73,7 @@
         drawBricks();
         drawScore();
         drawLives();
-        
+
         if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
           dx = -dx;
         }
@@ -85,14 +87,12 @@
             if (!lives) {
               alert("Game Over");
               document.location.reload();
-              clearInterval(interval);
-            }
-            else {
-                x = canvas.width /2;
-                y = canvas.height /3;
-                dx = 2;
-                dy = -2;
-                paddleX = (canvas.width - paddleWidth) / 2;
+            } else {
+              x = canvas.width / 2;
+              y = canvas.height / 3;
+              dx = 2;
+              dy = -2;
+              paddleX = (canvas.width - paddleWidth) / 2;
             }
           }
         }
@@ -106,6 +106,8 @@
         } else if (leftPressed) {
           paddleX = Math.max(paddleX - 7, 0);
         }
+
+        requestAnimationFrame(draw);
       }
 
       function drawBall() {
@@ -144,7 +146,7 @@
       }
 
       function startGame() {
-        interval = setInterval(draw, 10);
+        draw();
       }
 
       function getRandomHexColor() {
@@ -196,7 +198,6 @@
                 if (score === brickColumnCount * brickRowCount) {
                   alert("You WIN, Congraulations");
                   document.location.reload();
-                  clearInterval(interval);
                 }
               }
             }

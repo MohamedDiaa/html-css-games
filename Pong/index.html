@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pong</title>
+    <style>
+      *,
+      *::after,
+      *::before {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body,
+      html {
+        height: 100%;
+      }
+   
+    </style>
+  </head>
+  <body>
+    <canvas id="game-canvas"></canvas>
+
+    <script>
+      const canvas = document.querySelector("#game-canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext("2d");
+        
+      class Ball {
+        constructor({ position, velocity }) {
+          this.position = position;
+          this.velocity = velocity;
+          this.radius = 10;
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(
+            this.position.x,
+            this.position.y,
+            this.radius,
+            0,
+            Math.PI * 2
+          );
+          ctx.fillStyle = "red";
+          ctx.fill();
+          ctx.closePath();
+        }
+
+        update() {
+          this.position.x += this.velocity.dx;
+          this.position.y += this.velocity.dy;
+          this.draw();
+          requestAnimationFrame(()=>{ this.update() });
+        }
+      }
+
+      const ball = new Ball({
+        position: { x: 100, y: 100 },
+        velocity: { dx: 2, dy: 2 },
+      });
+
+      ball.update();
+    </script>
+  </body>
+</html>

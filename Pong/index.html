@@ -27,6 +27,60 @@
       canvas.height = window.innerHeight;
       const ctx = canvas.getContext("2d");
 
+      let ball = {};
+
+      let boundaries = [];
+
+      let net = {};
+
+      function setup() {
+        ball = new Ball({
+          position: { x: 100, y: 100 },
+          velocity: { dx: 1, dy: 1},
+        });
+
+        boundaries = [
+          new Boundary({
+            position: { x: 0, y: 0 },
+            width: canvas.width,
+            height: Boundary.side,
+          }),
+          new Boundary({
+            position: { x: 0, y: 0 },
+            width: Boundary.side,
+            height: canvas.height,
+          }),
+          new Boundary({
+            position: { x: canvas.width - Boundary.side, y: 0 },
+            width: Boundary.side,
+            height: canvas.height,
+          }),
+          new Boundary({
+            position: { x: 0, y: canvas.height - Boundary.side },
+            width: canvas.width,
+            height: Boundary.side,
+          }),
+        ];
+
+        net = new Net({
+          position: { x: canvas.width / 2, y: 0 },
+          width: 5,
+          height: canvas.height,
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        boundaries.forEach((boundary) => {
+          boundary.draw();
+        });
+        net.draw();
+
+        ball.update();
+        requestAnimationFrame(animate);
+      }
+
       class Ball {
         constructor({ position, velocity }) {
           this.position = position;
@@ -35,7 +89,6 @@
         }
 
         draw() {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.beginPath();
           ctx.arc(
             this.position.x,
@@ -58,13 +111,6 @@
           });
         }
       }
-
-      const ball = new Ball({
-        position: { x: 100, y: 100 },
-        velocity: { dx: 2, dy: 2 },
-      });
-
-      // ball.update();
 
       class Boundary {
         static color = "blue";
@@ -106,39 +152,8 @@
         }
       }
 
-      let boundaries = [
-        new Boundary({
-          position: { x: 0, y: 0 },
-          width: canvas.width,
-          height: Boundary.side,
-        }),
-        new Boundary({
-          position: { x: 0, y: 0 },
-          width: Boundary.side,
-          height: canvas.height,
-        }),
-        new Boundary({
-          position: { x: canvas.width - Boundary.side, y: 0 },
-          width: Boundary.side,
-          height: canvas.height,
-        }),
-        new Boundary({
-          position: { x: 0, y: canvas.height - Boundary.side },
-          width: canvas.width,
-          height: Boundary.side,
-        }),
-      ];
-
-      const net = new Net({
-        position: { x: canvas.width / 2, y: 0 },
-        width: 5,
-        height: canvas.height,
-      });
-
-      boundaries.forEach((boundary) => {
-        boundary.draw();
-      });
-      net.draw();
+      setup();
+      animate();
     </script>
   </body>
 </html>

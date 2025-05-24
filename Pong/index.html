@@ -73,7 +73,10 @@
         });
 
         player = new Player({
-          position: { x: Boundary.side + 10, y: canvas.height / 2 },
+          position: {
+            x: Boundary.side + 10,
+            y: canvas.height / 2,
+          },
         });
       }
 
@@ -85,7 +88,14 @@
         });
         net.draw();
 
-        if (ball.position.x + ball.velocity.dx <= Boundary.side) {
+        if (
+          ball.position.x - ball.radius <= player.position.x + Player.width &&
+          ball.position.y + ball.radius >= player.position.y &&
+          ball.position.y - ball.radius <= player.position.y + Player.height
+        ) {
+          ball.velocity.dx = -ball.velocity.dx;
+          ball.position.x = player.position.x + Player.width + ball.radius;
+        } else if (ball.position.x + ball.velocity.dx <= Boundary.side) {
           ball.velocity.dx = -ball.velocity.dx;
         } else if (
           ball.position.x + ball.velocity.dx >
@@ -105,19 +115,24 @@
         ball.update();
 
         if (upPressed === true) {
-          player.position.y -= 2;
+          if (player.position.y - 6 >= Boundary.side) {
+            player.position.y -= 6;
+          }
         } else if (downPressed === true) {
-          player.position.y += 2;
+          if (player.position.y + 6 + Player.height <= canvas.height - Boundary.side) {
+            player.position.y += 6;
+          }
         }
         player.draw();
         requestAnimationFrame(animate);
       }
 
       class Ball {
+        static radius = 10;
         constructor({ position, velocity }) {
           this.position = position;
           this.velocity = velocity;
-          this.radius = 10;
+          this.radius = Ball.radius;
         }
 
         draw() {
@@ -215,7 +230,7 @@
             break;
         }
       });
-   
+
       document.addEventListener("keyup", ({ key }) => {
         switch (key) {
           case "ArrowUp":

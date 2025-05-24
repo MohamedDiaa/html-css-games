@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: antiquewhite;
+        display: flex;
+        justify-content: center;
+      }
+      canvas {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="main-canvas"></canvas>
+
+    <script>
+      const canvas = document.querySelector("#main-canvas");
+      canvas.width = 500;
+      canvas.height = 600;
+      const ctx = canvas.getContext("2d");
+
+      let leftPressed = false;
+      let rightPressed = false;
+      let spacePressed = false;
+      let block = {
+        shape: [
+          [1, 0, 0, 0],
+          [1, 1, 1, 1],
+          [1, 0, 0, 0],
+        ],
+        position: {
+          x: canvas.width / 2 - 50,
+          y: 0,
+        },
+      };
+
+      class Square {
+        constructor({ position }) {
+          this.position = position;
+          this.width = 7;
+          this.height = 7;
+          this.color = "green";
+        }
+
+        draw() {
+          ctx.strokStyle = "green";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.rect(this.position.x, this.position.y, this.width, this.height);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+          //   ctx.stroke();
+          ctx.closePath();
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if(leftPressed === true) {
+            block.position.x += -3;
+        }
+        if(rightPressed === true) {
+            block.position.x += 3;
+        }
+        if(spacePressed === true) {
+            // rotate block
+        }
+
+        for (let i = 0; i < block.shape.length; i++) {
+          for (let j = 0; j < block.shape[i].length; j++) {
+            if (block.shape[i][j] === 1) {
+              const square = new Square({
+                position: {
+                  x: block.position.x + 10 * j,
+                  y: block.position.y + i * 10,
+                },
+              });
+              square.draw();
+            }
+          }
+        }
+        block.position.y += 1;
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      document.addEventListener("keydown", ({ key }) => {
+        switch (key) {
+          case "ArrowLeft":
+            leftPressed = true;
+            break;
+          case "ArrowRight":
+            rightPressed = true;
+            break;
+          case "Space":
+            spacePressed = true;
+            break;
+        }
+      });
+      document.addEventListener("keyup", ({ key }) => {
+        switch (key) {
+          case "ArrowLeft":
+            leftPressed = false;
+            break;
+          case "ArrowRight":
+            rightPressed = false;
+            break;
+          case "Space":
+            spacePressed = false;
+            break;
+        }
+      });
+    </script>
+  </body>
+</html>

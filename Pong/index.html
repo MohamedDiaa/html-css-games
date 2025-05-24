@@ -34,6 +34,7 @@
       let boundaries = [];
       let net = {};
       let player = {};
+      let opponent = {};
       let upPressed = false;
       let downPressed = false;
 
@@ -78,6 +79,13 @@
             y: canvas.height / 2,
           },
         });
+
+        opponent = new Player({
+          position: {
+            x: canvas.width - Boundary.side - 10 - Player.width,
+            y: canvas.height / 2,
+          },
+        });
       }
 
       function animate() {
@@ -95,35 +103,55 @@
         ) {
           ball.velocity.dx = -ball.velocity.dx;
           ball.position.x = player.position.x + Player.width + ball.radius;
-        } else if (ball.position.x + ball.velocity.dx <= Boundary.side) {
-          ball.velocity.dx = -ball.velocity.dx;
-        } else if (
-          ball.position.x + ball.velocity.dx >
-          canvas.width - Boundary.side
+        } 
+        
+        if (
+          ball.position.x + ball.radius >=
+            opponent.position.x  &&
+          ball.position.y + ball.radius >= opponent.position.y &&
+          ball.position.y - ball.radius <= opponent.position.y + Player.height
         ) {
           ball.velocity.dx = -ball.velocity.dx;
-        }
-        if (ball.position.y + +ball.velocity.dy <= Boundary.side) {
+          ball.position.x = opponent.position.x - ball.radius
+        } 
+        
+
+        if (ball.position.y + ball.velocity.dy <= Boundary.side) {
           ball.velocity.dy = -ball.velocity.dy;
-        } else if (
+        } 
+        
+        if (
           ball.position.y + ball.velocity.dy >=
           canvas.height - Boundary.side
         ) {
           ball.velocity.dy = -ball.velocity.dy;
         }
 
-        ball.update();
+        if (opponent.position.y + Player.height / 2 < ball.position.y) {
+          opponent.position.y += 4;
+        } else if (opponent.position.y + Player.height / 2 > ball.position.y) {
+          opponent.position.y -= 4;
+        }
 
+        //==
+        // Handle key input
+        //==
         if (upPressed === true) {
           if (player.position.y - 6 >= Boundary.side) {
             player.position.y -= 6;
           }
         } else if (downPressed === true) {
-          if (player.position.y + 6 + Player.height <= canvas.height - Boundary.side) {
+          if (
+            player.position.y + 6 + Player.height <=
+            canvas.height - Boundary.side
+          ) {
             player.position.y += 6;
           }
         }
+
+        ball.update();
         player.draw();
+        opponent.draw();
         requestAnimationFrame(animate);
       }
 

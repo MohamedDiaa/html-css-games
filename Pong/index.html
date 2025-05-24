@@ -16,20 +16,29 @@
       html {
         height: 100%;
       }
+      header {
+        display: block;
+        text-align: center;
+        position: relative;
+        margin: 10px;
+      }
     </style>
   </head>
   <body>
     <header>
-      <h1>Pong</h1>
+      <h2>Pong</h2>
+      <p id="scoreLabelView">You: 0 : Opponent: 0</p>
     </header>
     <canvas id="game-canvas"></canvas>
 
     <script>
       const canvas = document.querySelector("#game-canvas");
+      const scoreLabelView = document.querySelector("#scoreLabelView");
       canvas.width = window.innerWidth;
-      canvas.height = 658; //window.innerHeight;
+      canvas.height = 608; //window.innerHeight;
       const ctx = canvas.getContext("2d");
 
+      const winningScore = 10;
       let ball = {};
       let boundaries = [];
       let net = {};
@@ -37,8 +46,15 @@
       let opponent = {};
       let upPressed = false;
       let downPressed = false;
+      let playerScore = 0;
+      let opponentScore = 0;
 
       function setup() {
+        playerScore = 0;
+        opponentScore = 0;
+        upPressed = false;
+        downPressed = false;
+
         ball = new Ball({
           position: { x: 100, y: 100 },
           velocity: { dx: 6, dy: 6 },
@@ -103,23 +119,21 @@
         ) {
           ball.velocity.dx = -ball.velocity.dx;
           ball.position.x = player.position.x + Player.width + ball.radius;
-        } 
-        
+        }
+
         if (
-          ball.position.x + ball.radius >=
-            opponent.position.x  &&
+          ball.position.x + ball.radius >= opponent.position.x &&
           ball.position.y + ball.radius >= opponent.position.y &&
           ball.position.y - ball.radius <= opponent.position.y + Player.height
         ) {
           ball.velocity.dx = -ball.velocity.dx;
-          ball.position.x = opponent.position.x - ball.radius
-        } 
-        
+          ball.position.x = opponent.position.x - ball.radius;
+        }
 
         if (ball.position.y + ball.velocity.dy <= Boundary.side) {
           ball.velocity.dy = -ball.velocity.dy;
-        } 
-        
+        }
+
         if (
           ball.position.y + ball.velocity.dy >=
           canvas.height - Boundary.side
@@ -133,6 +147,23 @@
           opponent.position.y -= 4;
         }
 
+        if (
+          ball.position.x - ball.radius <= 0 ||
+          ball.position.x + ball.radius >= canvas.width
+        ) {
+          if (ball.position.x - ball.radius <= 0) {
+            opponentScore += 1;
+          } else if (ball.position.x + ball.radius >= canvas.width) {
+            playerScore += 1;
+          }
+
+          ball.position = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+          };
+          ball.velocity.dx *= -1;
+          ball.velocity.dy = 6 * (Math.random() > 0.5 ? 1 : -1);
+        }
         //==
         // Handle key input
         //==
@@ -152,6 +183,17 @@
         ball.update();
         player.draw();
         opponent.draw();
+        scoreLabelView.innerHTML = `You: ${playerScore} : Opponent: ${opponentScore}`;
+        if (playerScore === winningScore) {
+          alert("you wooon!, Good game.");
+          setup();
+          window.location.reload();
+        }
+        if (opponentScore === winningScore) {
+          alert("you lost!, Try again");
+          setup();
+          window.location.reload();
+        }
         requestAnimationFrame(animate);
       }
 

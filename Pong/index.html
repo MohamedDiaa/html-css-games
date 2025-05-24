@@ -19,24 +19,28 @@
     </style>
   </head>
   <body>
+    <header>
+      <h1>Pong</h1>
+    </header>
     <canvas id="game-canvas"></canvas>
 
     <script>
       const canvas = document.querySelector("#game-canvas");
       canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.height = 658; //window.innerHeight;
       const ctx = canvas.getContext("2d");
 
       let ball = {};
-
       let boundaries = [];
-
       let net = {};
+      let player = {};
+      let upPressed = false;
+      let downPressed = false;
 
       function setup() {
         ball = new Ball({
           position: { x: 100, y: 100 },
-          velocity: { dx: 6, dy: 6},
+          velocity: { dx: 6, dy: 6 },
         });
 
         boundaries = [
@@ -67,30 +71,45 @@
           width: 5,
           height: canvas.height,
         });
+
+        player = new Player({
+          position: { x: Boundary.side + 10, y: canvas.height / 2 },
+        });
       }
 
       function animate() {
-       ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         boundaries.forEach((boundary) => {
           boundary.draw();
         });
         net.draw();
 
-        if(ball.position.x + ball.velocity.dx <= Boundary.side) {
-            ball.velocity.dx = -ball.velocity.dx;
+        if (ball.position.x + ball.velocity.dx <= Boundary.side) {
+          ball.velocity.dx = -ball.velocity.dx;
+        } else if (
+          ball.position.x + ball.velocity.dx >
+          canvas.width - Boundary.side
+        ) {
+          ball.velocity.dx = -ball.velocity.dx;
         }
-        else if(ball.position.x + ball.velocity.dx > canvas.width - Boundary.side)  {
-            ball.velocity.dx = -ball.velocity.dx;
-        }
-        if(ball.position.y + + ball.velocity.dy <= Boundary.side) {
-            ball.velocity.dy = -ball.velocity.dy
-        }
-        else if(ball.position.y + ball.velocity.dy >= canvas.height - Boundary.side ) {
-            ball.velocity.dy = -ball.velocity.dy;
+        if (ball.position.y + +ball.velocity.dy <= Boundary.side) {
+          ball.velocity.dy = -ball.velocity.dy;
+        } else if (
+          ball.position.y + ball.velocity.dy >=
+          canvas.height - Boundary.side
+        ) {
+          ball.velocity.dy = -ball.velocity.dy;
         }
 
         ball.update();
+
+        if (upPressed === true) {
+          player.position.y -= 2;
+        } else if (downPressed === true) {
+          player.position.y += 2;
+        }
+        player.draw();
         requestAnimationFrame(animate);
       }
 
@@ -162,8 +181,56 @@
         }
       }
 
-      // Method calls
+      class Player {
+        static width = 10;
+        static height = 80;
 
+        constructor({ position }) {
+          this.position = position;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.rect(
+            this.position.x,
+            this.position.y,
+            Player.width,
+            Player.height
+          );
+          ctx.fillStyle = "green";
+          ctx.fill();
+          ctx.closePath();
+        }
+      }
+
+      document.addEventListener("keydown", ({ key }) => {
+        switch (key) {
+          case "ArrowUp":
+          case "w":
+            upPressed = true;
+            break;
+
+          case "s":
+          case "ArrowDown":
+            downPressed = true;
+            break;
+        }
+      });
+   
+      document.addEventListener("keyup", ({ key }) => {
+        switch (key) {
+          case "ArrowUp":
+          case "w":
+            upPressed = false;
+            break;
+
+          case "s":
+          case "ArrowDown":
+            downPressed = false;
+            break;
+        }
+      });
+
+      // Method calls
       setup();
       animate();
     </script>

@@ -35,6 +35,7 @@
       let spacePressed = false;
       let block = {};
       let collectedBlocks = [];
+      const gravityVelocity = 1;
 
       class Square {
         constructor({ position }) {
@@ -51,7 +52,6 @@
           ctx.rect(this.position.x, this.position.y, this.width, this.height);
           ctx.fillStyle = this.color;
           ctx.fill();
-          //   ctx.stroke();
           ctx.closePath();
         }
       }
@@ -76,10 +76,25 @@
             }
           }
         }
+
+        transpose() {
+          let newShape = new Array(this.shape[0].length).fill(null).map(() => {
+            return new Array(this.shape.length).fill(null);
+          });
+
+          for (let i = 0; i < this.shape.length; i++) {
+            for (let j = 0; j < this.shape[i].length; j++) {
+              newShape[j][i] = this.shape[i][j];
+            }
+          }
+          this.shape = newShape;
+        }
       }
 
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let velocity = gravityVelocity;
 
         if (leftPressed === true) {
           block.position.x += -3;
@@ -89,9 +104,11 @@
         }
         if (spacePressed === true) {
           // rotate block
+          block.transpose();
         }
-
-        console.log(collectedBlocks);
+        if (downPressed === true) {
+          velocity += 1;
+        }
 
         for (let i = 0; i < collectedBlocks.length; i++) {
           collectedBlocks[i].draw();
@@ -99,7 +116,7 @@
         block.draw();
 
         if (block.position.y + 25 < canvas.height) {
-          block.position.y += 1;
+          block.position.y += velocity;
         } else {
           collectedBlocks.push(block);
           generateNewBlock();
@@ -114,12 +131,41 @@
             x: canvas.width / 2 - 50,
             y: 0,
           },
-          shape: [
+          shape: selectShape(),
+        });
+      }
+
+      function selectShape() {
+        let shapes = [
+          [
+            [1, 1, 1, 1],
+            [1, 0, 0, 0],
+            [1, 0, 0, 0],
+            [0, 0, 0, 0],
+          ],
+          [
             [1, 0, 0, 0],
             [1, 1, 1, 1],
             [1, 0, 0, 0],
+            [0, 0, 0, 0],
           ],
-        });
+
+          [
+            [1, 0, 0, 0],
+            [1, 0, 0, 0],
+            [1, 0, 0, 0],
+            [1, 0, 0, 0],
+          ],
+          [
+            [1, 1, 1, 1],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+          ],
+        ];
+
+        let index = Math.floor(Math.random() * shapes.length);
+        return shapes[index];
       }
 
       generateNewBlock();
@@ -139,13 +185,17 @@
           case "D":
             rightPressed = true;
             break;
-          case "Space":
+          case " ":
             spacePressed = true;
             break;
           case "ArrowDown":
           case "Down":
+          case "s":
+          case "S":
             downPressed = true;
+            break;
         }
+        console.log(key);
       });
 
       document.addEventListener("keyup", ({ key }) => {
@@ -162,12 +212,15 @@
           case "D":
             rightPressed = false;
             break;
-          case "Space":
+          case " ":
             spacePressed = false;
             break;
           case "ArrowDown":
           case "Down":
+          case "s":
+          case "S":
             downPressed = false;
+            break;
         }
       });
     </script>

@@ -60,6 +60,12 @@
     <h1>Snakes & Ladders</h1>
     <div class="dice-container">
       <button>Dice:</button>
+      <img
+        id="dice-image"
+        width="50"
+        height="50"
+        alt=""
+      />
     </div>
     <div class="container">
       <div class="board"></div>
@@ -71,9 +77,11 @@
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       const button = document.querySelector("button");
+      const diceImage = document.querySelector("#dice-image");
 
       const ROWS = 10;
       const COLOUMNS = 10;
+      const diceList = ["zero", "one", "two", "three", "four", "five", "six"];
 
       let place = 99;
 
@@ -144,6 +152,8 @@
         } else {
           value += Math.ceil(Math.random() * 5);
         }
+
+        diceImage.src = `/assets/dice/dice-six-faces-${diceList[value]}.png`;
 
         button.innerHTML = `Dice: ${value}`;
 

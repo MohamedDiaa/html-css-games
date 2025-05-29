@@ -65,23 +65,24 @@
 
       setup();
       //draw({position: {x:10, y:90}});
-      place(1);
+      place(41);
       function setup() {
         for (let i = 0; i < ROWS; i++) {
           for (let j = 0; j < COLOUMNS; j++) {
             let square = document.createElement("div");
             square.style.backgroundColor = (i + j) % 2 === 0 ? "red" : "green";
-
+            square.row = i;
+            square.column = j;
+          
+            let index = -1;
             if (i % 2 === 0) {
-              const index = 100 - 10 * i - j;
-              square.innerHTML = `<span style='color:white; margin-left:10px'>${index}</span>`;
+              index = 100 - 10 * i - j;
             } else {
-              const index = 100 - 10 * (i + 1) + j + 1;
-              square.innerHTML = `<span style='color:white; margin-left:10px'>${index}</span>`;
-              square.id = `id-${index}`;
-              square.row = i;
-              square.column = j;
+              index = 100 - 10 * (i + 1) + j + 1;
             }
+
+            square.innerHTML = `<span style='color:white; margin-left:10px'>${index}</span>`;
+            square.id = `id-${index}`;
 
             board.appendChild(square);
           }
@@ -93,21 +94,24 @@
         const element = document.querySelector(`#id-${value}`);
         const row = element.row;
         const column = element.column;
-        const width = element.style.width;
-        const height = element.style.height;
+        const width = canvas.width / 10;
+        const height = canvas.height / 10; // element.style.height;
 
-        console.log('row',row, 'col', column, 'w', width, 'h',height);
         const position = {
-          x: row * height,
-          y: column * width,
+          x: column * width + width / 2,
+          y: row * height + height / 2,
         };
-        draw(position);
+
+        draw({ position: position });
       }
 
-      function draw({ position}) {
-        ctx.clearRect(position.x, position.y, canvas.width, canvas.height);
+      function draw({ position }) {
+        console.log(position);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         ctx.beginPath();
-        ctx.arc(10, 10, 2, 0, Math.PI * 2);
+        ctx.arc(position.x, position.y, 2, 0, Math.PI * 2);
         ctx.fillStyle = "black";
         ctx.fill();
         ctx.closePath();

@@ -46,10 +46,21 @@
 
         background-color: transparent;
       }
+      .dice-container {
+        display: flex;
+        justify-content: center;
+      }
+      button {
+        padding: 5px 20px;
+        font-weight: 300;
+      }
     </style>
   </head>
   <body>
     <h1>Snakes & Ladders</h1>
+    <div class="dice-container">
+      <button>Dice:</button>
+    </div>
     <div class="container">
       <div class="board"></div>
       <canvas id="canvas"></canvas>
@@ -59,13 +70,16 @@
       const board = document.querySelector(".board");
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
+      const button = document.querySelector("button");
 
       const ROWS = 10;
       const COLOUMNS = 10;
 
+      let place = 99;
+
       setup();
-      //draw({position: {x:10, y:90}});
-      place(41);
+      setPlayerPlace(place);
+
       function setup() {
         for (let i = 0; i < ROWS; i++) {
           for (let j = 0; j < COLOUMNS; j++) {
@@ -73,7 +87,7 @@
             square.style.backgroundColor = (i + j) % 2 === 0 ? "red" : "green";
             square.row = i;
             square.column = j;
-          
+
             let index = -1;
             if (i % 2 === 0) {
               index = 100 - 10 * i - j;
@@ -87,9 +101,15 @@
             board.appendChild(square);
           }
         }
+        //=====
+        // Setup button
+        //=====
+        button.onclick = () => {
+          throwDice();
+        };
       }
 
-      function place(value) {
+      function setPlayerPlace(value) {
         // square 1
         const element = document.querySelector(`#id-${value}`);
         const row = element.row;
@@ -115,6 +135,22 @@
         ctx.fillStyle = "black";
         ctx.fill();
         ctx.closePath();
+      }
+
+      function throwDice() {
+        let value = 1;
+        if (Math.floor(Math.random() < 0.5)) {
+          value += Math.floor(Math.random() * 5);
+        } else {
+          value += Math.ceil(Math.random() * 5);
+        }
+
+        button.innerHTML = `Dice: ${value}`;
+
+        if (place + value <= 100) {
+          place += value;
+          setPlayerPlace(place);
+        }
       }
     </script>
   </body>

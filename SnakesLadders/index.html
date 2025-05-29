@@ -52,14 +52,13 @@
     <h1>Snakes & Ladders</h1>
     <div class="container">
       <div class="board"></div>
-      <canvas id="canvas"></canvas>
+      <!-- <canvas id="canvas"></canvas> -->
     </div>
 
     <script>
       const board = document.querySelector(".board");
-      const canvas = document.getElementById("canvas");
-
-      const ctx = canvas.getContext("2d");
+      //   const canvas = document.getElementById("canvas");
+      //   const ctx = canvas.getContext("2d");
 
       const ROWS = 10;
       const COLOUMNS = 10;
@@ -71,9 +70,14 @@
           for (let j = 0; j < COLOUMNS; j++) {
             let square = document.createElement("div");
             square.style.backgroundColor = (i + j) % 2 === 0 ? "red" : "green";
-            square.innerHTML = `<span style='color:white;'>${
-              100 - (i + j)
-            }</span>`;
+
+            if (i % 2 === 0) {
+              const index = 100 - 10 * i - j;
+              square.innerHTML = `<span style='color:white; margin-left:10px'>${index}</span>`;
+            } else {
+              const index = 100 - 10 * (i + 1) + j + 1;
+              square.innerHTML = `<span style='color:white; margin-left:10px'>${index}</span>`;
+            }
 
             board.appendChild(square);
           }

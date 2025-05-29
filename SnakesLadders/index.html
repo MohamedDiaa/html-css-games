@@ -52,19 +52,20 @@
     <h1>Snakes & Ladders</h1>
     <div class="container">
       <div class="board"></div>
-      <!-- <canvas id="canvas"></canvas> -->
+      <canvas id="canvas"></canvas>
     </div>
 
     <script>
       const board = document.querySelector(".board");
-      //   const canvas = document.getElementById("canvas");
-      //   const ctx = canvas.getContext("2d");
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
 
       const ROWS = 10;
       const COLOUMNS = 10;
 
       setup();
-
+      //draw({position: {x:10, y:90}});
+      place(1);
       function setup() {
         for (let i = 0; i < ROWS; i++) {
           for (let j = 0; j < COLOUMNS; j++) {
@@ -77,11 +78,39 @@
             } else {
               const index = 100 - 10 * (i + 1) + j + 1;
               square.innerHTML = `<span style='color:white; margin-left:10px'>${index}</span>`;
+              square.id = `id-${index}`;
+              square.row = i;
+              square.column = j;
             }
 
             board.appendChild(square);
           }
         }
+      }
+
+      function place(value) {
+        // square 1
+        const element = document.querySelector(`#id-${value}`);
+        const row = element.row;
+        const column = element.column;
+        const width = element.style.width;
+        const height = element.style.height;
+
+        console.log('row',row, 'col', column, 'w', width, 'h',height);
+        const position = {
+          x: row * height,
+          y: column * width,
+        };
+        draw(position);
+      }
+
+      function draw({ position}) {
+        ctx.clearRect(position.x, position.y, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.arc(10, 10, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
       }
     </script>
   </body>

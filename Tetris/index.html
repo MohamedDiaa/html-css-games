@@ -40,8 +40,8 @@
       class Square {
         constructor({ position }) {
           this.position = position;
-          this.width = 7;
-          this.height = 7;
+          this.width = 10;
+          this.height = 10;
           this.color = "green";
         }
 
@@ -105,7 +105,7 @@
         if (spacePressed === true) {
           // rotate block
           block.transpose();
-        }
+         }
         if (downPressed === true) {
           velocity += 1;
         }
@@ -160,6 +160,11 @@
             [1, 1, 1, 1],
             [0, 0, 0, 0],
             [0, 0, 0, 0],
+            [0, 0, 0, 0],
+          ],          [
+            [0, 1, 0, 0],
+            [1, 1, 1, 0],
+            [1, 0, 0, 0],
             [0, 0, 0, 0],
           ],
         ];

@@ -41,8 +41,8 @@
         position: absolute;
         top: var(--container-padding);
         left: var(--container-padding);
-        width: calc(100% - 2 * var(--container-padding));
-        height: calc(100% - 2 * var(--container-padding));
+        /* width: calc(100% - 2 * var(--container-padding));
+        height: calc(100% - 2 * var(--container-padding)); */
 
         background-color: transparent;
       }
@@ -70,6 +70,9 @@
     <script>
       const board = document.querySelector(".board");
       const canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth - 80;
+      canvas.height = window.innerHeight - 80;
+
       const ctx = canvas.getContext("2d");
       const button = document.querySelector("button");
       const diceImage = document.querySelector("#dice-image");
@@ -201,6 +204,20 @@
 
         if (place + value <= 100) {
           place += value;
+
+          for (let i = 0; i < ladders.length; i++) {
+            if (place === ladders[i].p1) {
+              place = ladders[i].p2;
+              return;
+            }
+          }
+
+          for (let i = 0; i < snakes.length; i++) {
+            if (place === snakes[i].p1) {
+              place = snakes[i].p2;
+              return;
+            }
+          }
         }
       }
 
@@ -210,7 +227,7 @@
         console.log("place1", place1, "place2", place2);
         ctx.beginPath();
         ctx.strokeStyle = "blue";
-        ctx.lineWidth = 0.8;
+        ctx.lineWidth = 2;
         ctx.moveTo(place1.x + place1.width / 3, place1.y + place1.height / 3);
         ctx.lineTo(place2.x + place1.width / 3, place2.y + place1.height / 3);
 

@@ -90,8 +90,8 @@
         { p1: 72, p2: 91 },
       ];
 
-      //      drawSnake(99, 15, 59, 96);
-
+      // p1 is where snake head is and will move the player to p2
+      // p3 and p4 are control points to draw the snake body using bezier curve
       const snakes = [
         { p1: 98, p2: 79, p3: 82, p4: 77 },
         { p1: 64, p2: 60, p3: 62, p4: 43 },
@@ -100,13 +100,7 @@
 
       setup();
       setPlayerPlace(place);
-
-      ladders.forEach((element) => {
-        drawLadder(element.p1, element.p2);
-      });
-      snakes.forEach((element) => {
-        drawSnake(element.p1, element.p2, element.p3, element.p4);
-      });
+      animate();
 
       function setup() {
         for (let i = 0; i < ROWS; i++) {
@@ -135,6 +129,17 @@
         button.onclick = () => {
           throwDice();
         };
+      }
+
+      function drawMap() {
+        // =====
+        //=====
+        ladders.forEach((element) => {
+          drawLadder(element.p1, element.p2);
+        });
+        snakes.forEach((element) => {
+          drawSnake(element.p1, element.p2, element.p3, element.p4);
+        });
       }
 
       function getPlace(value) {
@@ -166,10 +171,16 @@
         draw({ position: playerPosition });
       }
 
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawMap();
+        setPlayerPlace(place);
+
+        requestAnimationFrame(animate);
+      }
+
       function draw({ position }) {
         // console.log(position);
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         ctx.beginPath();
         ctx.arc(position.x, position.y, 2, 0, Math.PI * 2);
         ctx.fillStyle = "black";
@@ -186,12 +197,10 @@
         }
 
         diceImage.src = `/assets/dice/dice-six-faces-${diceList[value]}.png`;
-
         button.innerHTML = `Dice: ${value}`;
 
         if (place + value <= 100) {
           place += value;
-          setPlayerPlace(place);
         }
       }
 
@@ -200,7 +209,8 @@
         const place2 = getPlace(sqaure2);
         console.log("place1", place1, "place2", place2);
         ctx.beginPath();
-        // ctx.lineWidth = 2;
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 0.8;
         ctx.moveTo(place1.x + place1.width / 3, place1.y + place1.height / 3);
         ctx.lineTo(place2.x + place1.width / 3, place2.y + place1.height / 3);
 
@@ -243,7 +253,6 @@
           place2.x,
           place2.y
         );
-        //  ctx.bezierCurveTo(110, 150, 180, 10, 210, 140);
         ctx.strokeStyle = "yellow";
         ctx.lineWidth = 3;
         ctx.stroke();

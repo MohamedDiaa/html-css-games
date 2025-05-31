@@ -35,21 +35,14 @@
         height: 400px;
         background-color: rgb(155, 150, 150);
       }
-      .tower:hover {
-        border: 4px solid red;
-      }
+
       .disk {
         position: absolute;
         background-color: black;
         height: 30px;
         border: 1px dotted white;
         transition: all 0.3s ease;
-
-        /* width: 300px; */
-        /* bottom: 0px; */
-        /* transform: translate(-140px, 0); */
       }
-     
     </style>
   </head>
   <body>
@@ -74,10 +67,9 @@
       let fromTower = -1;
 
       // Model
-      let towers = new Array(3).fill(null).map(() => []);
+      let towersDataList = new Array(3).fill(null).map(() => []);
 
-
-      let towersView = document.getElementsByClassName("tower");
+      let towersDataListCollection = document.getElementsByClassName("tower");
       // Functions
       setup();
       display();
@@ -87,50 +79,69 @@
       }
 
       function setup() {
-        towers.length = 0;
-        towers = new Array(3).fill(null).map(() => {
+        towersDataList.length = 0;
+        towersDataList = new Array(3).fill(null).map(() => {
           return new Array();
         });
 
         for (let i = 0; i < DISK_COUNT; i++) {
           const d = new Disk(MAX_WIDTH - 40 * i);
-          towers[0][i] = d;
+          towersDataList[0][i] = d;
         }
 
-        for (let i = 0; i < towers.length; i++) {
-          setupTower(towersView[i]);
+        for (let i = 0; i < towersDataList.length; i++) {
+          setupTower(towersDataListCollection[i]);
         }
       }
 
       function setupTower(towerView) {
-        towerView.addEventListener("click", (event) => {
-          if (fromTower == -1) {
-            fromTower = parseInt(towerView.id);
-          } else {
-            increament();
+        towerView.ondragover = function (event) {
+          event.preventDefault();
+        };
+
+        towerView.ondrop = function (event) {
+          const dw = parseInt(event.dataTransfer.getData("number"));
+
+          for (let i = 0; i < towersDataList.length; i++) {
+            const towerData = towersDataList[i];
+
+            if (towerData.length > 0) {
+              console.table(towerData);
+
+              const lastDisk = towerData[towerData.length - 1].width;
+              console.log("lastdisk", lastDisk, "dw", dw);
+
+              if (lastDisk === dw) {
+                fromTower = i;
+              }
+            }
+          }
+
+          if (fromTower > -1) {
             move(parseInt(fromTower), parseInt(towerView.id));
+            incrementMovesCount();
+
             fromTower = -1;
           }
+
           display();
-        });
+        };
       }
 
       function display() {
-        if (towersView.length != towers.length) {
+        if (towersDataListCollection.length != towersDataList.length) {
           return;
         }
 
-        for (let i = 0; i < towers.length; i++) {
-         
-          displayTowerView(towersView[i]);
+        for (let i = 0; i < towersDataList.length; i++) {
 
-          for (let j = 0; j < towers[i].length; j++) {
-            let disk = towers[i][j];
+          for (let j = 0; j < towersDataList[i].length; j++) {
+            let disk = towersDataList[i][j];
             if (disk) {
               let div = document.createElement("div");
               let dw = 100;
-              if (towers[i][j].width > 0) {
-                dw = towers[i][j].width;
+              if (towersDataList[i][j].width > 0) {
+                dw = towersDataList[i][j].width;
               }
 
               div.className = "disk";
@@ -138,53 +149,49 @@
               div.style.height = `${DISK_HEIGHT}px`;
               div.style.bottom = `${DISK_HEIGHT * j}px`;
               div.style.transform = `translate(${-dw / 2 + 10}px, 0)`;
-              towersView[i].appendChild(div);
+
+              if (j === towersDataList[i].length - 1) {
+                div.draggable = true;
+
+                div.ondragstart = function (event) {
+                  event.dataTransfer.setData("number", dw);
+                };
+              }
+
+              towersDataListCollection[i].appendChild(div);
             }
           }
         }
       }
 
-      function displayTowerView(towerView) {
-        while (towerView.lastElementChild) {
-             towerView.removeChild(towerView.lastElementChild);
-          }
-          const index = parseInt(towerView.id)
-          if (fromTower == index) {
-            towerView.style.backgroundColor = "red";
-          }
-          else {
-            towerView.style.backgroundColor = "rgb(155, 150, 150)";
-          }
-      }
-
       function move(fromvalue, tovalue) {
         if (tovalue != fromvalue) {
-          if (towers[fromvalue].length > 0) {
-            if (towers[tovalue].length > 0) {
-              const fromLastDisk = towers[fromvalue].at(-1);
-              const toLastDisk = towers[tovalue].at(-1);
+          if (towersDataList[fromvalue].length > 0) {
+            if (towersDataList[tovalue].length > 0) {
+              const fromLastDisk = towersDataList[fromvalue].at(-1);
+              const toLastDisk = towersDataList[tovalue].at(-1);
               console.log("from", fromLastDisk.width, "to", toLastDisk.width);
               if (toLastDisk.width < fromLastDisk.width) {
                 return;
               }
             }
 
-            const selectedDisk = towers[fromvalue].pop();
-            towers[tovalue].push(selectedDisk);
+            const selectedDisk = towersDataList[fromvalue].pop();
+            towersDataList[tovalue].push(selectedDisk);
             gameisFinished();
           }
         }
         //  display();
       }
 
-      function increament() {
+      function incrementMovesCount() {
         movesCount += 1;
         const counter = document.getElementById("moves-counter");
         counter.innerText = `Moves Count ${movesCount}`;
       }
 
       function gameisFinished() {
-        if (towers.at(-1).length == DISK_COUNT) {
+        if (towersDataList.at(-1).length == DISK_COUNT) {
           const counter = document.getElementById("moves-counter");
           counter.innerText = `Congratulations game is finished with ${movesCount}`;
         }

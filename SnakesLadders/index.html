@@ -59,6 +59,11 @@
         padding: 5px 20px;
         font-weight: 300;
       }
+      footer {
+        text-align: center;
+        margin: 30px;
+        font-size: 30px;
+      }
     </style>
   </head>
   <body>
@@ -71,6 +76,11 @@
       <div class="board"></div>
       <canvas id="canvas"></canvas>
     </div>
+    <footer>
+      Designed by M.D. Alwakil 2025.
+      <br />
+      <a href="https://github.com/MohamedDiaa">Github</a>
+    </footer>
 
     <script>
       const board = document.querySelector(".board");
@@ -234,7 +244,7 @@
           }
         }
       }
-      
+
       function drawLadder(square1, sqaure2) {
         const place1 = getPlace(square1);
         const place2 = getPlace(sqaure2);

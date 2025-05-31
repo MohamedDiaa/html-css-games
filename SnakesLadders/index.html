@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+
     <title>Snakes & Ladders</title>
     <style>
       *,
@@ -21,7 +25,7 @@
       }
       .container {
         position: relative;
-        width: 100;
+        width: 100%;
         height: 100vh;
         background-color: antiquewhite;
         padding: var(--container-padding);
@@ -70,8 +74,10 @@
     <script>
       const board = document.querySelector(".board");
       const canvas = document.getElementById("canvas");
-      canvas.width = window.innerWidth - 80;
-      canvas.height = window.innerHeight - 80;
+      const container = document.querySelector(".container");
+      const rect = board.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
 
       const ctx = canvas.getContext("2d");
       const button = document.querySelector("button");
@@ -250,17 +256,57 @@
         const place3 = getPlace(square3);
         const place4 = getPlace(square4);
 
+        // draw yellow head
         ctx.beginPath();
-        ctx.arc(place1.x, place1.y, 4, 0, Math.PI * 2);
         ctx.fillStyle = "yellow";
-        ctx.fill();
 
+        ctx.arc(
+          place1.x + place1.width / 2,
+          place1.y + place1.height / 2,
+          15,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
         ctx.closePath();
 
+        // draw 2 black eyes
+        ctx.beginPath();
+        ctx.arc(
+          place1.x + place1.width / 2,
+          place1.y + place1.height / 2 - 5,
+          3,
+          0,
+          Math.PI * 2
+        );
+        ctx.arc(
+          place1.x + place1.width / 2,
+          place1.y + place1.height / 2 + 5,
+          3,
+          0,
+          Math.PI * 2
+        );
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
+
+        // draw tongue
+        ctx.beginPath();
+        ctx.rect(
+          place1.x + place1.width / 2 + 10,
+          place1.y + place1.height / 2,
+          15,
+          2
+        );
+        ctx.fillStyle = "black";
+        ctx.fill();
+        ctx.closePath();
+
+        // draw body
         ctx.beginPath();
         ctx.strokeStyle = "yellow";
 
-        ctx.moveTo(place1.x, place1.y);
+        ctx.moveTo(place1.x + place1.width / 2, place1.y + place1.height / 2);
 
         ctx.bezierCurveTo(
           place3.x,

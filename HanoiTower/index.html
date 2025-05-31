@@ -69,7 +69,7 @@
       // Model
       let towersDataList = new Array(3).fill(null).map(() => []);
 
-      let towersDataListCollection = document.getElementsByClassName("tower");
+      let towersViewListCollection = document.getElementsByClassName("tower");
       // Functions
       setup();
       display();
@@ -90,7 +90,7 @@
         }
 
         for (let i = 0; i < towersDataList.length; i++) {
-          setupTower(towersDataListCollection[i]);
+          setupTower(towersViewListCollection[i]);
         }
       }
 
@@ -100,41 +100,23 @@
         };
 
         towerView.ondrop = function (event) {
-          const dw = parseInt(event.dataTransfer.getData("number"));
-
-          for (let i = 0; i < towersDataList.length; i++) {
-            const towerData = towersDataList[i];
-
-            if (towerData.length > 0) {
-              console.table(towerData);
-
-              const lastDisk = towerData[towerData.length - 1].width;
-              console.log("lastdisk", lastDisk, "dw", dw);
-
-              if (lastDisk === dw) {
-                fromTower = i;
-              }
-            }
-          }
-
-          if (fromTower > -1) {
-            move(parseInt(fromTower), parseInt(towerView.id));
-            incrementMovesCount();
-
-            fromTower = -1;
-          }
-
+          const from = parseInt(event.dataTransfer.getData("fromTower"));
+          move(from, parseInt(towerView.id));
+          incrementMovesCount();
           display();
         };
       }
 
       function display() {
-        if (towersDataListCollection.length != towersDataList.length) {
+        if (towersViewListCollection.length != towersDataList.length) {
           return;
         }
 
-        for (let i = 0; i < towersDataList.length; i++) {
+        for (let i = 0; i < towersViewListCollection.length; i++) {
+          towersViewListCollection[i].innerHTML = ""; // Clear each tower's children
+        }
 
+        for (let i = 0; i < towersDataList.length; i++) {
           for (let j = 0; j < towersDataList[i].length; j++) {
             let disk = towersDataList[i][j];
             if (disk) {
@@ -154,11 +136,11 @@
                 div.draggable = true;
 
                 div.ondragstart = function (event) {
-                  event.dataTransfer.setData("number", dw);
+                  event.dataTransfer.setData("fromTower", i);
                 };
               }
 
-              towersDataListCollection[i].appendChild(div);
+              towersViewListCollection[i].appendChild(div);
             }
           }
         }

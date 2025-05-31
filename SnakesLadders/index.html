@@ -86,7 +86,7 @@
 
       const ROWS = 10;
       const COLOUMNS = 10;
-      const diceList = ["zero", "one", "two", "three", "four", "five", "six"];
+      const diceList = ["one", "two", "three", "four", "five", "six"];
 
       let place = 1;
 
@@ -122,7 +122,8 @@
         for (let i = 0; i < ROWS; i++) {
           for (let j = 0; j < COLOUMNS; j++) {
             let square = document.createElement("div");
-            square.style.backgroundColor = (i + j) % 2 === 0 ? "antiquewhite" : "green";
+            square.style.backgroundColor =
+              (i + j) % 2 === 0 ? "antiquewhite" : "green";
             square.row = i;
             square.column = j;
 
@@ -201,41 +202,39 @@
         // ctx.arc(position.x, position.y, 2, 0, Math.PI * 2);
         // ctx.fillStyle = "black";
         ctx.font = "20px Arial";
-ctx.fillText("🔴", position.x - 10, position.y + 10);
+        ctx.fillText("🔴", position.x - 10, position.y + 10);
         ctx.fill();
         ctx.closePath();
       }
 
       function throwDice() {
-        let value = 1;
-        if (Math.floor(Math.random() < 0.5)) {
-          value += Math.floor(Math.random() * 5);
-        } else {
-          value += Math.ceil(Math.random() * 5);
-        }
-
+        const value = Math.floor(Math.random() * 6); // 0-5
         diceImage.src = `/assets/dice/dice-six-faces-${diceList[value]}.png`;
-        button.innerHTML = `Dice: ${value}`;
+        button.innerHTML = `Dice: ${value + 1}`;
 
-        if (place + value <= 100) {
-          place += value;
+        if (place + value + 1 <= 100) {
+          place += value + 1;
 
           for (let i = 0; i < ladders.length; i++) {
             if (place === ladders[i].p1) {
               place = ladders[i].p2;
-              return;
+              break;
             }
           }
 
           for (let i = 0; i < snakes.length; i++) {
             if (place === snakes[i].p1) {
               place = snakes[i].p2;
-              return;
+              break;
             }
+          }
+
+          if (place === 100) {
+            setTimeout(() => alert("🎉 You won the game!"), 100);
           }
         }
       }
-
+      
       function drawLadder(square1, sqaure2) {
         const place1 = getPlace(square1);
         const place2 = getPlace(sqaure2);
@@ -268,7 +267,7 @@ ctx.fillText("🔴", position.x - 10, position.y + 10);
         // draw body
         ctx.beginPath();
         ctx.strokeStyle = "indigo";
-      
+
         ctx.moveTo(place1.x + place1.width / 2, place1.y + place1.height / 2);
 
         ctx.bezierCurveTo(

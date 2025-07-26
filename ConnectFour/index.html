@@ -73,6 +73,8 @@
         .fill(null)
         .map(() => new Array(COLUMNS).fill("white"));
 
+      let turn = 0; // 0 player 1 Vs 1 player2
+
       fillBoard();
 
       function fillBoard() {
@@ -90,7 +92,9 @@
             div.onclick = (event) => {
               for (let x = ROWS - 1; x >= 0; x--) {
                 if (data[x][j] === "white") {
-                  data[x][j] = "red";
+                  data[x][j] = currentPlayerColor();
+                  togglePlayer();
+
                   break;
                 }
               }
@@ -98,6 +102,13 @@
             };
           }
         }
+      }
+
+      function togglePlayer() {
+        turn = turn === 0 ? 1 : 0;
+      }
+      function currentPlayerColor() {
+        return turn === 0 ? player1color : player2color;
       }
     </script>
   </body>

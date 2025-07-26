@@ -74,6 +74,7 @@
         .map(() => new Array(COLUMNS).fill("white"));
 
       let turn = 0; // 0 player 1 Vs 1 player2
+      let isGameOver = false;
 
       fillBoard();
 
@@ -90,21 +91,73 @@
 
             board.appendChild(div);
             div.onclick = (event) => {
+              if (isGameOver) {
+                return;
+              }
               for (let x = ROWS - 1; x >= 0; x--) {
                 if (data[x][j] === "white") {
                   data[x][j] = currentPlayerColor();
-                  togglePlayer();
-
                   break;
                 }
               }
+              togglePlayer();
               fillBoard();
             };
           }
         }
+
+        if (isGameOver) {
+          alert(`Game over winner ${turn === 0 ? "Player1" : "Player2"}`);
+          return;
+        }
+      }
+
+      function checkGameOver() {
+        for (let i = ROWS - 1; i >= 0; i--) {
+          for (let j = 0; j < COLUMNS; j++) {
+            if (data[i][j] !== "white") {
+              // we have 3 directions right, right-up , up
+              // then we need to check four spots;
+              // check right direction
+              for (let incr = 0; incr < 4; incr++) {
+                if (data[i][j + incr] !== data[i][j]) {
+                  break;
+                }
+                if (incr === 3) {
+                  isGameOver = true;
+                  return;
+                }
+              }
+              // check right up direction
+              for (let incr = 0; incr < 4; incr++) {
+                if (data[i - incr][j + incr] !== data[i][j]) {
+                  break;
+                }
+                if (incr === 3) {
+                  isGameOver = true;
+                  return;
+                }
+              }
+              // check up direction
+              for (let incr = 0; incr < 4; incr++) {
+                if (data[i - incr][j] !== data[i][j]) {
+                  break;
+                }
+                if (incr === 3) {
+                  isGameOver = true;
+                  return;
+                }
+              }
+            }
+          }
+        }
+
+        return false;
       }
 
       function togglePlayer() {
+        checkGameOver();
+
         turn = turn === 0 ? 1 : 0;
       }
       function currentPlayerColor() {

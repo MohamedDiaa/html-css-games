@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect Four</title>
+    <style>
+      :root {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="mycanvas"></canvas>
+
+    <script>
+      const canvas = document.querySelector("#mycanvas");
+      const minSide = 0.9 * Math.min(window.innerHeight, window.innerWidth);
+      canvas.width = minSide;
+      canvas.height = minSide;
+      const ctx = canvas.getContext("2d");
+
+      let data = [[]];
+      const ROWS = 6;
+      const COLUMNS = 7;
+      const padding = 20;
+
+      const Radius = (minSide - (padding + 1) * ROWS) / ROWS / 2;
+
+      const PC1 = "red";
+      const PC2 = "green";
+
+      const PLAYER1 = "player1";
+      const PLAYER2 = "player2";
+
+      let turn = PLAYER1;
+
+      function tooglePlayer() {
+        if (turn === PLAYER1) {
+          turn = PLAYER2;
+        } else {
+          turn = PLAYER1;
+        }
+      }
+      //Math.min((minSide - padding*ROWS) / ROWS, (minSide  - padding*COLUMNS) / COLUMNS) / 2;
+
+      init();
+      drawBackground();
+      drawBoard();
+
+      function init() {
+        data = new Array(ROWS)
+          .fill(null)
+          .map(() => new Array(COLUMNS).fill("E"));
+        console.log(data);
+      }
+
+      function drawBoard() {
+        for (let i = 0; i < ROWS; i++) {
+          for (let j = 0; j < COLUMNS; j++) {
+            console.log("i", i, "j", j, data[i][j]);
+
+            ctx.beginPath();
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 3;
+            const x = i * 2 * Radius + Radius + (i + 1) * padding;
+            const y = j * 2 * Radius + Radius + (j + 1) * padding;
+
+            ctx.arc(x, y, Radius, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
+      }
+
+      console.log(ctx);
+
+      function drawBackground() {
+        ctx.beginPath();
+        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 0.5;
+        ctx.fillStyle = "pink";
+        ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+        ctx.closePath();
+      }
+      //   ctx.beginPath();
+      //   ctx.strokeStyle = "black";
+      //   ctx.arc(Radius, Radius, Radius, 0, Math.PI * 2);
+      //   ctx.stroke();
+
+      canvas.addEventListener("click", (event) => {
+        console.log(event.x, event.y);
+      });
+    </script>
+  </body>
+</html>

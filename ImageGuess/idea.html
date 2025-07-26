@@ -1,3 +1,5 @@
+<!-- Show image being the board so the user guess with the least number of boxes -->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -66,8 +68,8 @@
       const board = document.querySelector(".game-board ");
       const player1color = "red";
       const player2color = "green";
-      const ROWS = 7;
-      const COLUMNS = 6;
+      const ROWS = 6;
+      const COLUMNS = 7;
 
       let data = new Array(ROWS)
         .fill(null)
@@ -88,12 +90,7 @@
 
             board.appendChild(div);
             div.onclick = (event) => {
-              for (let x = ROWS - 1; x >= 0; x--) {
-                if (data[x][j] === "white") {
-                  data[x][j] = "red";
-                  break;
-                }
-              }
+              data[i][j] = "red";
               fillBoard();
             };
           }

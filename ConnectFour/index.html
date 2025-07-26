@@ -19,8 +19,16 @@
         flex-direction: row;
         height: 100vh;
       }
+      .container {
+        width: 50%;
+        display: flex;
+        justify-content: center;
+      }
       .leader-board {
-        border: 1px solid black;
+        padding: 20px;
+        border: 0.1px solid rgb(227, 201, 201);
+        background: beige;
+        border-radius: 10px;
       }
       .game-board {
         background: rgb(43, 141, 226);
@@ -52,18 +60,33 @@
     </style>
   </head>
   <body>
-    <div class="leader-board">
-      <h1>Connect Four</h1>
-      <h3>
-        <span class="player1">Player1</span><span class="versus">Vs</span
-        ><span class="player2">Player2</span>
-      </h3>
+    <div class="container">
+      <div class="leader-board">
+        <h1>Connect Four</h1>
+        <h3>
+          <span class="player1">Player1</span><span class="versus">Vs</span
+          ><span class="player2">Player2</span>
+        </h3>
+        <div
+          class="cell"
+          style="display: inline-block; background-color: red"
+        ></div>
+        <div
+          class="cell"
+          style="display: inline-block; background-color: green"
+        ></div>
+
+        <h3 class="winner-label"></h3>
+      </div>
     </div>
 
-    <div class="game-board"></div>
+    <div class="container">
+      <div class="game-board"></div>
+    </div>
 
     <script>
       const board = document.querySelector(".game-board ");
+      const winnerLabel = document.querySelector(".winner-label");
       const player1color = "red";
       const player2color = "green";
       const ROWS = 7;
@@ -75,6 +98,7 @@
 
       let turn = 0; // 0 player 1 Vs 1 player2
       let isGameOver = false;
+      let winningRow = [];
 
       fillBoard();
 
@@ -88,8 +112,8 @@
             const div = document.createElement("div");
             div.classList.add("cell");
             div.style.backgroundColor = data[i][j];
-
             board.appendChild(div);
+
             div.onclick = (event) => {
               if (isGameOver) {
                 return;
@@ -107,7 +131,12 @@
         }
 
         if (isGameOver) {
-          alert(`Game over winner ${turn === 0 ? "Player1" : "Player2"}`);
+          console.log("wining rows", winningRow);
+
+          const winner = turn === 0 ? "Player1" : "Player2";
+          alert(`Game over winner ${winner}`);
+          winnerLabel.textContent = `Winner is ${winner}`;
+          winnerLabel.style.color = turn === 0 ? "red" : "green";
           return;
         }
       }
@@ -120,7 +149,10 @@
               // then we need to check four spots;
               // check right direction
               for (let incr = 0; incr < 4; incr++) {
+                winningRow.push({ r: i, c: j + incr });
+
                 if (data[i][j + incr] !== data[i][j]) {
+                  winningRow = [];
                   break;
                 }
                 if (incr === 3) {
@@ -130,7 +162,9 @@
               }
               // check right up direction
               for (let incr = 0; incr < 4; incr++) {
+                winningRow.push({ r: i - incr, c: j + incr });
                 if (data[i - incr][j + incr] !== data[i][j]) {
+                  winningRow = [];
                   break;
                 }
                 if (incr === 3) {
@@ -140,7 +174,10 @@
               }
               // check up direction
               for (let incr = 0; incr < 4; incr++) {
+                winningRow.push({ r: i - incr, c: j });
+
                 if (data[i - incr][j] !== data[i][j]) {
+                  winningRow = [];
                   break;
                 }
                 if (incr === 3) {
@@ -158,8 +195,11 @@
       function togglePlayer() {
         checkGameOver();
 
-        turn = turn === 0 ? 1 : 0;
+        if (!isGameOver) {
+          turn = turn === 0 ? 1 : 0;
+        }
       }
+
       function currentPlayerColor() {
         return turn === 0 ? player1color : player2color;
       }
